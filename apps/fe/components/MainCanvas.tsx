@@ -2,19 +2,36 @@
 import { useEffect, useRef } from "react"
 import {initGame} from "../game";
 
-export const CANVAS_WIDTH = 2000;
-export const CANVAS_HEIGHT = 1000;
+
 
 export default function MainCanvas(){
-    
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     useEffect(() => {
+
         if (!canvasRef.current) return;
-        initGame(canvasRef.current);
-      }, [canvasRef.current]);
+
+        canvasRef.current.width = window.innerWidth
+        canvasRef.current.height = window.innerHeight
+
+        initGame(canvasRef.current, window.innerWidth, window.innerHeight);
+      
+    }, [canvasRef.current]);
+
+    useEffect(() => {
+        const handleWheel = (e: WheelEvent) => {
+          if (e.ctrlKey) {
+            e.preventDefault();
+          }
+        };
+      
+        window.addEventListener("wheel", handleWheel, { passive: false });
+        return () => window.removeEventListener("wheel", handleWheel);
+    }, []);
+
+
     return(
         <div>
-            <canvas ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} className="border-2">
+            <canvas ref={canvasRef} className="border-2 pixelsCanvas overflow-x-hidden overflow-y-hidden">
                 Canvas for Agario
             </canvas>
         </div>
