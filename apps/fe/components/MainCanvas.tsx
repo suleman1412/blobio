@@ -31,7 +31,7 @@ export default function MainCanvas(){
 
     return(
         <div>
-            <canvas ref={canvasRef} className="border-2 pixelsCanvas overflow-x-hidden overflow-y-hidden">
+            <canvas ref={canvasRef} width={2000} height={2000} className="border-2 pixelsCanvas overflow-x-hidden overflow-y-hidden">
                 Canvas for Agario
             </canvas>
         </div>
