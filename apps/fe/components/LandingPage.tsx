@@ -5,7 +5,6 @@ import { Gamepad2, Github } from "lucide-react";
 import { easeInOut, motion } from "framer-motion";
 import Link from "next/link";
 import Circles from "./Circles";
-import BlobCharacter from "./BlobCharacters";
 
 export default function LandingPage() {
     const [isModalOpen, setIsModalOpen] = useState(true)

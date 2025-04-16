@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Pixelify_Sans, Press_Start_2P, Space_Grotesk } from "next/font/google";
+import {  Pixelify_Sans, Press_Start_2P, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const spaceGro = Space_Grotesk({
