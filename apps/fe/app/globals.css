@@ -4,7 +4,8 @@
   --background: #ffffff;
   --foreground: #171717;
   --font-space-grotesk: var(--space-grotesk); 
-  --font-press-start: var(--press-start)
+  --font-press-start: var(--press-start);
+  --font-pixelify-sans: var(--font-pixelify-sans)
 }
 
 
@@ -46,5 +47,8 @@ html, body {
   }
   .spaceGro {
     font-family: var(--font-space-grotesk);
+  }
+  .pixelifySans{
+    font-family: var( --font-pixelify-sans);
   }
 }

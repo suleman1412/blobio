@@ -5,6 +5,7 @@ import { Gamepad2, Github } from "lucide-react";
 import { easeInOut, motion } from "framer-motion";
 import Link from "next/link";
 import Circles from "./Circles";
+import BlobCharacter from "./BlobCharacters";
 
 export default function LandingPage() {
     const [isModalOpen, setIsModalOpen] = useState(true)
@@ -32,15 +33,16 @@ export default function LandingPage() {
                 {isModalOpen ?
                     <div className="w-full max-w-md">
                         <Circles />
-                        <div className="relative bg-black/70 backdrop-blur-sm p-8 rounded-xl border-2 border-white/50 shadow-2xl">
+
+                        <div className="relative bg-white/20 backdrop-blur-sm p-8 rounded-xl border-2 border-black shadow-2xl">
                             <div className="text-center mb-8">
                                 <div className="flex justify-center mb-4">
-                                    <Gamepad2 className="w-16 h-16 text-white" />
+                                    <Gamepad2 className="w-16 h-16 text-black" />
                                 </div>
-                                <h1 className="text-5xl font-bold text-transparent  bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2 p2p">
+                                <h1 className="text-5xl font-bold text-transparent  bg-clip-text bg-gradient-to-r from-gray-900 to-gray-900/60 mb-2 p2p">
                                     Blob.io
                                 </h1>
-                                <p className="text-gray-300 text-xl spaceGro mt-6">Eat or be eaten!</p>
+                                <p className="text-gray-800 font-semibold text-xl spaceGro mt-6">Eat. Grow. Dominate.</p>
                             </div>
 
                             <form onSubmit={handleStartGame} className="space-y-6 ">
@@ -57,11 +59,19 @@ export default function LandingPage() {
 
                                 <button
                                     type="submit"
-                                    className="w-full py-3 px-6 bg-white text-black hover:bg-gray-200 rounded-lg transform transition-all hover:scale-105 active:scale-95 text-xl p2p"
+                                    className="w-full py-3 px-6 bg-gray-400 text-black hover:bg-gray-200 rounded-lg transform transition-all hover:scale-105 active:scale-95 text-xl p2p border-2 border-gray-500\"
                                 >
                                     START GAME
                                 </button>
                             </form>
+                            <div className="mt-6 text-center space-y-2">
+                                <h3 className="text-xl font-bold pixelifySans tracking-wider text-black">HOW TO PLAY</h3>
+                                <ul className="text-sm text-gray-400 spaceGro">
+                                    <li>• Move your mouse to control your blob</li>
+                                    <li>• Eat smaller blobs to grow bigger</li>
+                                    <li>• Avoid larger blobs or you'll be eaten!</li>
+                                </ul>
+                            </div>
                         </div>
                         {/* Footer */}
                         <div className="mt-8 text-gray-500 flex justify-center items-center gap-4">
