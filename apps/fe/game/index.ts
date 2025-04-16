@@ -3,14 +3,14 @@ import { drawGrid } from "./drawGrid";
 import { spawnBlobsNearPlayer } from "./SpawnZone";
 import { clamp, exponentialDecay, lerp } from "./utils";
 
-export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS_HEIGHT: number) {
+export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS_HEIGHT: number, username: string) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return;
 
     let gameRunning = true
     ctx.imageSmoothingEnabled = false;
     canvas.style.backgroundColor = 'white'
-    let frameCount = 0;
+    let gameLoopAnimation: number;
     let currentMouseX = CANVAS_WIDTH / 2;
     let currentMouseY = CANVAS_HEIGHT / 2;
     const defaultPlayerSize = 12
@@ -18,20 +18,25 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
     let cameraY = 0;
     let currentZoom = 2;
 
-    const Player = new Blob(defaultPlayerSize, 'black', 0, 0, 'Suleman')
+    const Player = new Blob(defaultPlayerSize, 'black', 0, 0, username)
 
     const blobs: Blob[] = []
 
-
-    window.addEventListener('mousemove', (e: MouseEvent) => {
+    // HANDLER FUNCTIONS
+    const handleMouseMove = (e: MouseEvent) => {
         const rect = canvas.getBoundingClientRect();
         currentMouseX = e.clientX - rect.left;
         currentMouseY = e.clientY - rect.top;
-    })
+    }
 
-    window.addEventListener('wheel', (e: WheelEvent) => {
+    const handleWheel =  (e: WheelEvent) => {
         e.preventDefault()
-    });
+    }
+    // HANDLER OVER
+
+    window.addEventListener('mousemove', handleMouseMove)
+
+    window.addEventListener('wheel',handleWheel);
 
 
     function gameLoop() {
@@ -92,7 +97,6 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
             const eatCondition = Player.eats(blobs[i])
             if (eatCondition) {
                 blobs.splice(i, 1);
-                frameCount++;
                 spawnBlobsNearPlayer(CANVAS_WIDTH, CANVAS_HEIGHT, Player, blobs)
             } else if (eatCondition === 0) {
                 gameRunning = false
@@ -107,13 +111,22 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
 
         Player.draw(ctx);
         ctx.restore();
-        const gameLoopAnimation = requestAnimationFrame(gameLoop)
+        gameLoopAnimation = requestAnimationFrame(gameLoop)
         if (gameRunning == false) {
             cancelAnimationFrame(gameLoopAnimation)
-            gameLoopAnimation
         }
     }
 
     gameLoop();
+    return {
+        cleanup: () => {
+            console.log("Cleanup function called");
+            gameRunning = false
+            cancelAnimationFrame(gameLoopAnimation)
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('wheel', handleWheel);
+            console.log("Cleanup complete");
+        }
+    }
 }
 
