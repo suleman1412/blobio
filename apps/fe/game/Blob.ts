@@ -1,4 +1,3 @@
-import { Playwrite_RO } from "next/font/google";
 import { clamp, lerp } from "./utils";
 
 export class Blob {
