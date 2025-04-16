@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-space-grotesk: var(--space-grotesk); 
+  --font-press-start: var(--press-start)
 }
 
 
@@ -30,5 +32,19 @@ html, body {
   .pixelsCanvas {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+  }
+  .radialCustom {
+    background-image: radial-gradient( var(--background) 2px, var(--foreground) 2px);
+    background-size: 60px 60px;
+  }
+  .gridPattern{
+    background-image: linear-gradient(to_right,var(--background) 2px, var(--foreground) 2px), linear-gradient(to_bottom, var(--background) 2px, var(--foreground) 2px);
+    background-size: 14px 24px;
+  }
+  .p2p {
+    font-family: var(--font-press-start);
+  }
+  .spaceGro {
+    font-family: var(--font-space-grotesk);
   }
 }
