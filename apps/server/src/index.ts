@@ -14,4 +14,4 @@ app.get('/', async(c) => {
 
 app.route('/api', apiRouter)
 
-export default app as ExportedHandler
+export default app 

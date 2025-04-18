@@ -1,4 +1,8 @@
 import { Hono } from "hono";
+import { AuthSchema } from '@repo/common/schema'
+import prisma from '@repo/db/client'
+import bcrypt from 'bcryptjs'
+
 
 const apiRouter = new Hono()
 
@@ -9,12 +13,28 @@ apiRouter.get('/', async (c) => {
 })
 
 apiRouter.post('/signup', async(c) => {
-	const { username, password } = await c.req.json()
-	console.log(username, password)
-
+	const body = await c.req.json()
+    const { data, success, error } = AuthSchema.safeParse(body)
+    if(!success){
+        return c.json({
+            message: `Error in AuthSchema validation:`,
+            error: error
+        }, 400)
+    }
+    
+    const hashedPassword = await bcrypt.hash(data.password, 5)
+    console.log(hashedPassword)
+    const user = await prisma.user.create({
+        data: {
+			username: data.username,
+			password: data.password
+		}
+    })
+    console.log(data.username, data.password)
     return c.json({
-        username: username,
-        password: password
+        id: user.id,
+        username: user.username,
+        password: user.password
     })
 })
 

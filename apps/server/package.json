@@ -10,11 +10,14 @@
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20250418.0",
+		"@repo/common": "workspace:*",
+		"@repo/db": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
 		"typescript": "^5.5.2",
-		"wrangler": "^4.12.0",
-		"@repo/common": "workspace:*"
+		"wrangler": "^4.12.0"
 	},
 	"dependencies": {
+		"bcryptjs": "^3.0.2",
 		"hono": "^4.7.7"
 	}
 }
