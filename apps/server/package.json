@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"bcryptjs": "^3.0.2",
-		"hono": "^4.7.7"
+		"hono": "^4.7.7",
+		"jose": "^6.0.10"
 	}
 }

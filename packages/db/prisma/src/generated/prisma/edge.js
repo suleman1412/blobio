@@ -145,7 +145,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../../.env"
   },
   "relativePath": "../../..",
@@ -155,18 +155,17 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiZTAxYThmNDMtN2Q2Mi00MjgwLWEyNjMtNmJlZjU3NGE2Y2RlIiwidGVuYW50X2lkIjoiNDBkMjc5MjU5MjFkYTUwZDgyNzdmMDA3ODdhODQxYmM2ZTViYjUxODI0ODA4NDkxYjdhMDc5YTI4YmVhM2M1NyIsImludGVybmFsX3NlY3JldCI6ImUyNmQ1NDAzLTZkZTUtNDQ2ZC1iNGZjLTMzOGViOGJhNDFmNCJ9.RRrHiHVwGzWLgtIwfNCUQfKmVgL70h5PYaDzXWln6L4"
       }
     }
   },
   "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id        String   @id @default(nanoid(7))\n  username  String   @unique\n  password  String\n  avatar    String?\n  createdAt DateTime @default(now())\n}\n",
   "inlineSchemaHash": "29771848068a045b8211abdcac06955a0272543b89456831f6d7fafb12647c79",
-  "copyEngine": true
+  "copyEngine": false
 }
 config.dirname = '/'
 
