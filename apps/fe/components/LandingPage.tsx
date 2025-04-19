@@ -12,7 +12,6 @@ export default function LandingPage() {
 
     const handleStartGame = (e: React.FormEvent) => {
         e.preventDefault();
-        // Game start logic will go here
         if (username.trim() === '') {
             alert('Username is empty')
             setUsername('')
@@ -72,7 +71,6 @@ export default function LandingPage() {
                                 </ul>
                             </div>
                         </div>
-                        {/* Footer */}
                         <div className="mt-8 text-gray-500 flex justify-center items-center gap-4">
                             <Link href="https://github.com/suleman1412" className="hover:text-white transition-colors">
                                 <Github className="w-6 h-6 hover:text-black" />

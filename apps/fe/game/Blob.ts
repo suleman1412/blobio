@@ -112,14 +112,12 @@ export class Blob {
         
         if ( distanceBwTwo < this.r + other.r){
             const R = Math.sqrt(this.r ** 2 + other.r ** 2)
-            
             // Can only 'eat' a blob if 10% bigger than the other
             if(this.r > other.r * 1.1){
                 this.targetR = R
                 other.isAlive = false
                 this.r += (this.targetR - this.r) * 0.5 
             }
-
              // Check if this blob is larger than the player, game over if true
              if (other.r > this.r) {
                 return 0;

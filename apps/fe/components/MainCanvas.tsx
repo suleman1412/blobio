@@ -2,8 +2,6 @@
 import { useEffect, useRef, useState } from "react"
 import {initGame} from "../game";
 
-
-
 export default function MainCanvas({ username }: { username: string}){
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const [isReady, setIsReady] = useState(false)
