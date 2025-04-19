@@ -44,32 +44,20 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
         if (!ctx) return;
         ctx.save();
 
-
         // Calculate world position for mouse
         const worldMouseX = currentMouseX + cameraX;
         const worldMouseY = currentMouseY + cameraY;
 
-
-
         // Calculate zoom target based on size AND growth
         const zoomFactor = exponentialDecay(3.32, 0.1, Player.r, 1);
-
-        // const zoomFactor = (defaultPlayerSize / Player.r) ;
-
         // Update player with world-space mouse coordinates
         Player.setNewCoords(worldMouseX, worldMouseY);
         Player.update();
-
-
         // Update world offset based on player position
         cameraX = Player.x - CANVAS_WIDTH / 2;
         cameraY = Player.y - CANVAS_HEIGHT / 2;
-
-        // Clear and prepare for drawing
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-
-        // To 
         ctx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2)
 
 
@@ -81,14 +69,10 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
             currentZoom = lerp(currentZoom, zoomFactor, 0.01);
         }
         ctx.scale(currentZoom, currentZoom)
-        // ctx.scale(zoomFactor, zoomFactor)
         ctx.translate(-Player.x, -Player.y)
 
         drawGrid(ctx, Player, CANVAS_WIDTH, CANVAS_HEIGHT, currentZoom)
-
-
         spawnBlobsNearPlayer(CANVAS_WIDTH, CANVAS_HEIGHT, Player, blobs)
-
         for (let i = blobs.length - 1; i >= 0; i--) {
             const dx = Player.x - blobs[i].x;
             const dy = Player.y - blobs[i].y;
@@ -108,7 +92,6 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
             }
         }
 
-
         Player.draw(ctx);
         ctx.restore();
         gameLoopAnimation = requestAnimationFrame(gameLoop)
@@ -116,7 +99,6 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
             cancelAnimationFrame(gameLoopAnimation)
         }
     }
-
     gameLoop();
     return {
         cleanup: () => {

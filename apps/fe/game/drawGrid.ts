@@ -1,8 +1,7 @@
 import { Blob } from "./Blob";
 
 export function drawGrid(ctx: CanvasRenderingContext2D, Player: Blob, CANVAS_WIDTH: number, CANVAS_HEIGHT:number, currentZoom: number) {
-    // Grid settings
-    const gridSize = 50; // Size of each grid cell
+    const gridSize = 50; 
     const gridColor = "#bdbdbd";
     
     // Get visible area boundaries based on camera position
