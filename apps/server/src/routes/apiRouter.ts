@@ -35,8 +35,7 @@ apiRouter.post('/signup', async(c) => {
     return c.json({
         message: "Signup successful",
         id: user.id,
-        username: user.username,
-        password: user.password
+        username: user.username
     })
 })
 
