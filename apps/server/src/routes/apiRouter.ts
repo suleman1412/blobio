@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { AuthSchema, JWT_SECRET } from '@repo/common/schema'
 import prisma from '@repo/db/client'
 import bcrypt from 'bcryptjs'
-import { SignJWT } from 'jose'
+import { sign } from 'hono/jwt'
 
 
 const apiRouter = new Hono()
@@ -20,7 +20,7 @@ apiRouter.post('/signup', async(c) => {
         return c.json({
             message: `Error in AuthSchema validation:`,
             error: error
-        }, 400)
+        }, { status: 400 })
     }
     
     const hashedPassword = await bcrypt.hash(data.password, 5)
@@ -46,7 +46,7 @@ apiRouter.post('/signin', async (c) => {
         return c.json({
             message: `Error in AuthSchema validation:`,
             error: error
-        }, 400)
+        }, { status: 400 })
     }
     
     const user = await prisma.user.findFirst({
@@ -68,11 +68,9 @@ apiRouter.post('/signin', async (c) => {
         })
     }
     
-    const token = await new SignJWT({
+    const token = await sign({
         id: user.id
-    })
-    .setProtectedHeader({"alg": "HS256", "typ": "JWT"})
-    .sign(JWT_SECRET)
+    }, JWT_SECRET)
 
     return c.json({
         message: "Signin successful",

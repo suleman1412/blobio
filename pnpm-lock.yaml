@@ -20,6 +20,9 @@ importers:
 
   apps/fe:
     dependencies:
+      '@repo/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       clsx:
         specifier: ^2.1.1
         version: 2.1.1

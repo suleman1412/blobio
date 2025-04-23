@@ -1,7 +1,8 @@
-export { MyDurableObject } from './DurableObject'
-
-import { Hono } from "hono";
+export { GameRoom } from './ws/main'
+import { Hono } from "hono" ;
 import apiRouter from './routes/apiRouter';
+import connectRouter from './routes/connectRouter';
+
 
 const app = new Hono()
 
@@ -13,5 +14,6 @@ app.get('/', async(c) => {
 
 
 app.route('/api', apiRouter)
+app.route('/connect', connectRouter)
 
 export default app 

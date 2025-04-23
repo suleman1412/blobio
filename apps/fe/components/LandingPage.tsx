@@ -5,10 +5,11 @@ import { Gamepad2, Github } from "lucide-react";
 import { easeInOut, motion } from "framer-motion";
 import Link from "next/link";
 import Circles from "./Circles";
+import GameRoom from "./GameRoom";
 
 export default function LandingPage() {
     const [isModalOpen, setIsModalOpen] = useState(true)
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState('suleman');
 
     const handleStartGame = (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,7 +19,7 @@ export default function LandingPage() {
             setUsername('')
         } else {
             setIsModalOpen(p => !p)
-            console.log('Starting game with username:', username);
+            // console.log('Starting game with username:', username);
         }
     };
 
@@ -85,10 +86,11 @@ export default function LandingPage() {
                     </div>
                     :
                     <div>
-                        <MainCanvas username={username} />
-                    </div>}
+                        <GameRoom username={username} />
+                    </div>
+                    }
             </div>
-        </motion.div>
+         </motion.div>
     )
 }
 

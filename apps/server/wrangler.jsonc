@@ -6,16 +6,16 @@
 	"migrations": [
 		{
 			"new_sqlite_classes": [
-				"MyDurableObject"
+				"GameRoom"
 			],
-			"tag": "v1"
+			"tag": "v2"
 		}
 	],
 	"durable_objects": {
 		"bindings": [
 			{
-				"class_name": "MyDurableObject",
-				"name": "MY_DURABLE_OBJECT"
+				"class_name": "GameRoom",
+				"name": "GAME_ROOM"
 			}
 		]
 	},

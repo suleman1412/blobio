@@ -1,30 +1,31 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
-import {initGame} from "../game";
+import {initGame} from "../game/initGame";
+import useWebSocket from "@/hooks/useWebSocket";
 
 
 
-export default function MainCanvas({ username }: { username: string}){
+export default function MainCanvas({ username, clientWS }: { 
+    username: string,
+    clientWS: WebSocket
+}){
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const [isReady, setIsReady] = useState(false)
+
+
 
     useEffect(() => {
-        setIsReady(true)
-    }, [])
-    useEffect(() => {
 
-        if (!isReady || !canvasRef.current) return;
-
+        if (!canvasRef.current || !clientWS) return;
         canvasRef.current.width = window.innerWidth
         canvasRef.current.height = window.innerHeight
 
-        const gameInstance = initGame(canvasRef.current, window.innerWidth, window.innerHeight, username);
+        const gameInstance = initGame(canvasRef.current, window.innerWidth, window.innerHeight, username, clientWS);
         return () => {
             if(gameInstance?.cleanup){
                 gameInstance.cleanup()
             }
         }
-    }, [isReady]);
+    }, [clientWS]);
 
     useEffect(() => {
         const handleWheel = (e: WheelEvent) => {
@@ -37,7 +38,7 @@ export default function MainCanvas({ username }: { username: string}){
         return () => window.removeEventListener("wheel", handleWheel);
     }, []);
 
-
+    
     return(
         <div>
             <canvas ref={canvasRef} width={2000} height={2000} className="border-2 pixelsCanvas overflow-x-hidden overflow-y-hidden">
