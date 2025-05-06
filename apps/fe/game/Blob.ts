@@ -1,3 +1,4 @@
+import { GameMessage } from "@repo/common/schema";
 import { clamp, lerp } from "./utils";
 
 export class Blob {
@@ -10,8 +11,8 @@ export class Blob {
     previousR: number;
     growthRate: number = 0;
     isMoving: boolean;
-    prevPos: { x: number, y: number }
-    constructor(r: number, color: string, x: number, y: number, label?: string) {
+    userId: string
+    constructor(r: number, color: string, x: number, y: number, userId: string, label?: string) {
         this.r = r;
         this.color = color;
         this.pos = { x: x, y: y };
@@ -19,7 +20,7 @@ export class Blob {
         this.previousR = r;
         this.label = label
         this.isMoving = false
-        this.prevPos = { x: this.pos.x, y: this.pos.y }
+        this.userId = userId
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -80,7 +81,7 @@ export class Blob {
         return Math.sqrt((V2.x - V1.x) ** 2 + (V2.y - V1.y) ** 2)
     }
 
-    setNewCoords(worldMouseCoords: { x: number, y: number }) {
+    setNewCoords(worldMouseCoords: { x: number, y: number }, ws: WebSocket) {
 
         const directionX = worldMouseCoords.x - this.pos.x;
         const directionY = worldMouseCoords.y - this.pos.y;
@@ -89,7 +90,7 @@ export class Blob {
             this.isMoving = false
             return
         };
-        this.isMoving = true
+        
         // Speed based on player size (larger = slower)
         const minSpeed = 2;
         const maxSpeed = 6;
@@ -104,11 +105,37 @@ export class Blob {
         this.pos.y += scaledVel.y;
 
         if(this.isMoving){
-            this.prevPos = { x: this.pos.x, y: this.pos.y }
+            this.sendMoveMessage(ws)
         }
-    }
 
-    eats(other: Blob) {
+        this.isMoving = true
+    }
+    sendMoveMessage(ws: WebSocket){
+        const MoveMessage: GameMessage = {
+            type: 'MOVE',
+            data: {
+                username: this.label ?? 'unknown',
+                userId: this.userId,
+                state: {
+                    pos: { x: this.pos.x, y: this.pos.y },
+                    radius: this.r,
+                    color: this.color
+                }
+            }
+        }
+        ws.send(JSON.stringify(MoveMessage))
+    }
+    sendEatMessage(other: Blob, ws: WebSocket){
+        const EatMessage: GameMessage = {
+            type: 'EAT',
+            data: {
+                eaterId: this.userId,
+                targetId: other.userId
+            }
+        }
+        ws.send(JSON.stringify(EatMessage))
+    }
+    eats(other: Blob, ws: WebSocket) {
         const distanceBwTwo = this.distance(this.pos, other.pos)
 
         if (distanceBwTwo < this.r + other.r) {
@@ -119,6 +146,7 @@ export class Blob {
                 this.targetR = R
                 other.isAlive = false
                 this.r += (this.targetR - this.r) * 0.5
+                this.sendEatMessage(other, ws)
             }
 
             // Check if this blob is larger than the player, game over if true
@@ -126,8 +154,8 @@ export class Blob {
                 return 0;
             }
             return true
-        } else {
-            return false
-        }
+        } 
+
+        return false
     }
 }

@@ -24,14 +24,14 @@ apiRouter.post('/signup', async(c) => {
     }
     
     const hashedPassword = await bcrypt.hash(data.password, 5)
-    console.log('hashedPassword: ', hashedPassword)
+    // console.log('hashedPassword: ', hashedPassword)
     const user = await prisma.user.create({
         data: {
 			username: data.username,
 			password: hashedPassword
 		}
     })
-    console.log(data.username, data.password)
+    // console.log(data.username, data.password)
     return c.json({
         message: "Signup successful",
         id: user.id,

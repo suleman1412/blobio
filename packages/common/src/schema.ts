@@ -6,27 +6,28 @@ export const AuthSchema = z.object({
 })
 export const JWT_SECRET = 'suleman123'
 
+type basicInfo = {
+	id?: string;
+	name: string;
+	color: string;
+	x?: number,
+	y?: number,
+	radius?: number
+}
+
+// client sends to server
 type JoinMessage = {
 	type: "JOIN";
-	data: {
-		id: string;
-		name: string;
-		x: number;
-		y: number;
-		radius: number;
-		color: string;
-	};
+	data: basicInfo;
 };
 
+// client sends to server
 type MoveMessage = {
 	type: "MOVE";
-	data: {
-		id: string;
-		x: number;
-		y: number;
-	};
+	data: UserState;
 };
 
+// client sends to server
 type EatMessage = {
 	type: "EAT";
 	data: {
@@ -34,32 +35,78 @@ type EatMessage = {
 		targetId: string;
 	};
 };
-
+// Server sends the client
 type LeaveMessage = {
 	type: "LEAVE";
 	data: {
 		id: string;
 	};
 };
-
+// Server sends the client
 type SpawnMessage = {
 	type: "SPAWN";
 	data: {
-		blobId: string;
-		x: number;
-		y: number;
-		radius: number;
-		color: string;
+		blob: BlobType;
 	};
 };
-
+// Server sends the client
 type DespawnMessage = {
 	type: "DESPAWN";
 	data: {
 		blobId: string;
 	};
 };
+// Server sends the client
+type InitGame = {
+	type: 'INIT_GAME',
+	data: {
+		blobs: BlobType[],
+		otherPlayers: UserState[]
+		selfPlayer: UserState
+	}
+}
+// Server sends the client
+type NewPlayerJoined = {
+	type: "NEW_PLAYER",
+	data: {
+		player: UserState;
+	}
+}
+// Server sends the client
+type GameOver = {
+	type: 'GAME_OVER',
+}
+
+export type GameMessage = JoinMessage | MoveMessage | EatMessage | LeaveMessage | SpawnMessage | DespawnMessage | InitGame | NewPlayerJoined | GameOver
+
+export type BlobType = {
+	color: string,
+	foodRadius: number,
+	blobX: number, 
+	blobY: number,
+	blobId: string
+}
 
 
-export type GameMessage = JoinMessage | MoveMessage | EatMessage | LeaveMessage | SpawnMessage | DespawnMessage
+export type PlayerType = {
+	id: string,
+	color: string,
+	playerRadius: number,
+	playerX: number,
+	playerY: number
+}
 
+export type serverGameState = {
+	blobs: Record<string, BlobType>;
+	Players: Record<string, PlayerType>;
+};
+
+export interface UserState {
+	userId: string;
+	username: string;
+	state: {
+		radius: number;
+		color?: string;
+		pos: { x: number; y: number };
+	};
+}

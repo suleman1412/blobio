@@ -55,7 +55,7 @@ export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number
                     const blobY = y * CHUNK_SIZE + Math.random() * CHUNK_SIZE;
                     const foodRadius = randomFoodRadius()
                     if(!foodRadius) return;
-                    blobs.push(new Blob(foodRadius, generateRandomColor(), blobX, blobY));
+                    blobs.push(new Blob(foodRadius, generateRandomColor(), blobX, blobY, 'dsa'));
                 }
             }
         }

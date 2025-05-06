@@ -1,3 +1,4 @@
+import { BlobType, UserState } from "@repo/common/schema";
 import { Blob } from "./Blob";
 
 export interface GameState {
@@ -5,8 +6,9 @@ export interface GameState {
     ctx: CanvasRenderingContext2D;
     CANVAS_WIDTH: number;
     CANVAS_HEIGHT: number;
-    Player: Blob;
-    blobs: Blob[];
+    selfPlayer: Blob;
+    blobs: BlobType[];
+    otherPlayers: UserState[]
     mouseCoords : { x: number, y: number }
     cameraCoords : { x: number, y: number }
     currentZoom: number;
