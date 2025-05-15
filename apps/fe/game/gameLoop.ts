@@ -5,7 +5,6 @@ import { GameState } from '@repo/common/schema'
 
 export default function gameLoop(state: GameState) {
     const { ctx, mouseCoords, cameraCoords, CANVAS_WIDTH, CANVAS_HEIGHT, clientWS, } = state;
-    // let { currentZoom, gameRunning } = state
     let { currentZoom } = state
 
     const { selfBlob, clientPlayers, clientBlobs, setGameState } = useGameStore.getState()
@@ -14,8 +13,6 @@ export default function gameLoop(state: GameState) {
     const MAX_DISTANCE = Math.max(CANVAS_WIDTH, CANVAS_HEIGHT) * clamp(selfBlob.targetR / selfBlob.r, 1.2, 2);
     if (!ctx) return;
     ctx.save();
-    
-    // console.log('[gameloop]clientsidePlayers:', clientPlayers)
 
     // Calculate world position for mouse
     const worldMouseCoords = { x: mouseCoords.x + cameraCoords.x, y: mouseCoords.y + cameraCoords.y }
@@ -61,11 +58,9 @@ export default function gameLoop(state: GameState) {
         if (eatCondition) {
             updatedFood.delete(id)
             setGameState({ clientBlobs: updatedFood })
-            // clientBlobs.delete(id);
         } else if (eatCondition === 0) {
-            // alert('Game End');
             setGameState({ hasGameStarted: false})
-            console.log('when the food is bigger')
+            // console.log('when the food is bigger')
             break;
         }
         if (distSq > MAX_DISTANCE ** 2) {
@@ -81,13 +76,12 @@ export default function gameLoop(state: GameState) {
             updatedPlayers.delete(playerId)
             if(eatCondition){
                 setGameState({
-                    clientPlayers: updatedPlayers
+                    clientPlayers: updatedPlayers,
                 })
-                console.log('player got eaten')
+                // console.log('player got eaten')
             } 
         }
     }
-    
     
     selfBlob.draw(ctx);
     ctx.restore();

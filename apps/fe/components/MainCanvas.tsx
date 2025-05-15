@@ -9,19 +9,18 @@ export default function MainCanvas({ clientWS, dimension }: {
     dimension: { width: number, height: number }
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const { hasGameStarted, selfBlob } = useGameStore()
+    const { hasGameStarted, renderCanvasFlag, selfBlob } = useGameStore()
 
     useEffect(() => {
         if (!canvasRef.current || !clientWS) return;
         if (!hasGameStarted) return;
-
         const gameInstance = initGame(canvasRef.current, dimension.width, dimension.height, clientWS);
         return () => {
             if (gameInstance?.cleanup) {
                 gameInstance.cleanup()
             }
         }
-    }, [hasGameStarted]);
+    }, [selfBlob?.isAlive]);
 
     useEffect(() => {
         const handleWheel = (e: WheelEvent) => {

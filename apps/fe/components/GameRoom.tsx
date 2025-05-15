@@ -11,7 +11,7 @@ export default function GameRoom() {
     const { ws: clientWS, isConnected } = useWebSocket('ws://localhost:8787/connect/ws/default');
     const { selfBlob, hasGameStarted, setGameState } = useGameStore();
     const { username, color } = useUserStore();
-    const [ dimension, setDimensions ] = useState({ width: 0, height: 0 });
+    const [dimension, setDimensions] = useState({ width: 0, height: 0 });
 
     // Set dimensions on mount and on resize
     useEffect(() => {
@@ -67,7 +67,7 @@ export default function GameRoom() {
                             )
                         ])
                     ),
-                    selfBlob: new Blob(parsedMessage.data.selfPlayer.state.radius, parsedMessage.data.selfPlayer.state.color!, parsedMessage.data.selfPlayer.state.pos.x, parsedMessage.data.selfPlayer.state.pos.y, parsedMessage.data.selfPlayer.userId, parsedMessage.data.selfPlayer.classify,parsedMessage.data.selfPlayer.username),
+                    selfBlob: new Blob(parsedMessage.data.selfPlayer.state.radius, parsedMessage.data.selfPlayer.state.color!, parsedMessage.data.selfPlayer.state.pos.x, parsedMessage.data.selfPlayer.state.pos.y, parsedMessage.data.selfPlayer.userId, parsedMessage.data.selfPlayer.classify, parsedMessage.data.selfPlayer.username),
                     // hasGameStarted: true,
                 });
             } else if (parsedMessage.type === 'SPAWN') {
@@ -153,7 +153,7 @@ export default function GameRoom() {
             } else if (parsedMessage.type === 'EAT') {
                 const { targetId } = parsedMessage.data;
 
-                const { clientBlobs, clientPlayers,  selfBlob } = useGameStore.getState()
+                const { clientBlobs, clientPlayers, selfBlob } = useGameStore.getState()
 
                 if (clientBlobs.has(targetId)) {
                     const updatedMap = new Map(clientBlobs);
@@ -161,7 +161,7 @@ export default function GameRoom() {
                     setGameState({ clientBlobs: updatedMap });
                     return;
                 }
-                
+
 
                 if (clientPlayers.has(targetId)) {
                     const updatedMap = new Map(clientPlayers);
@@ -169,8 +169,8 @@ export default function GameRoom() {
                     setGameState({ clientPlayers: updatedMap });
                     return;
                 }
-                if(selfBlob){
-                    if(selfBlob.userId === targetId){
+                if (selfBlob) {
+                    if (selfBlob.userId === targetId) {
                         // alert("[GameRoom]You got eaten!");
                         selfBlob.isAlive = false;
                         setGameState({ selfBlob: selfBlob })
@@ -185,15 +185,16 @@ export default function GameRoom() {
     }, [isConnected]);
 
     useEffect(() => {
-        console.log('SelfBlob is Alive: ', selfBlob?.isAlive)
-        console.log('hasGameStarted: ', hasGameStarted)
-        console.log('isCOnnected: ', isConnected)
-        console.log('clientWs: ', clientWS)
+        console.log(`
+            SelfBlob is Alive: ${selfBlob?.isAlive} 
+            hasGameStarted: ${hasGameStarted} 
+            isConnected: ${isConnected}
+            clientWs:`, clientWS)
     }, [selfBlob?.isAlive, hasGameStarted, isConnected, clientWS])
 
-    if (!isConnected || !clientWS ) {
-        if(selfBlob){
-            if(selfBlob.isAlive === false && hasGameStarted === false){
+    if (!isConnected || !clientWS) {
+        if (selfBlob) {
+            if (selfBlob.isAlive === false && hasGameStarted === false) {
                 alert('You died')
                 return <LandingPage />
             }
