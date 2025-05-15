@@ -5,7 +5,6 @@ import { verify } from "hono/jwt";
 export default async function authMiddleware(c: Context, next: Next) {
 
     const token = c.req.query('token')
-    // const token = c.req.header('authorization')
     console.log('in authMiddlware, token: ',token)
     
     if (!token || !token.startsWith('Bearer ')) {
@@ -21,7 +20,6 @@ export default async function authMiddleware(c: Context, next: Next) {
         const decoded = await verify(actualToken, JWT_SECRET)
         // @ts-ignore
         console.log(decoded.id)
-        // @ts-ignore
         c.set('userId', decoded.id);
         await next();
     } catch (error) {

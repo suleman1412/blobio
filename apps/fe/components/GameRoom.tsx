@@ -5,13 +5,13 @@ import { useGameStore, useUserStore } from "@/store/store";
 import { GameMessage } from "@repo/common/schema";
 import { useEffect, useState } from "react";
 import { Blob } from "@/game/Blob";
-import { parse } from "path";
+import LandingPage from "./LandingPage";
 
 export default function GameRoom() {
     const { ws: clientWS, isConnected } = useWebSocket('ws://localhost:8787/connect/ws/default');
-    const { setGameState } = useGameStore();
+    const { selfBlob, hasGameStarted, setGameState } = useGameStore();
     const { username, color } = useUserStore();
-    const [dimension, setDimensions] = useState({ width: 0, height: 0 });
+    const [ dimension, setDimensions ] = useState({ width: 0, height: 0 });
 
     // Set dimensions on mount and on resize
     useEffect(() => {
@@ -41,13 +41,18 @@ export default function GameRoom() {
             const parsedMessage: GameMessage = JSON.parse(ev.data);
             if (parsedMessage.type === 'INIT_GAME') {
                 setGameState({
-                    blobs: parsedMessage.data.blobs,
-                    Players: parsedMessage.data.otherPlayers,
-                    selfPlayer: parsedMessage.data.selfPlayer,
-                    clientBlobs: parsedMessage.data.blobs.map(blob => {
-                        const newBlob = new Blob(blob.foodRadius, blob.color, blob.blobX, blob.blobY, blob.blobId)
-                        return newBlob
-                    }),
+                    clientBlobs: new Map(
+                        parsedMessage.data.blobs.map(blob => [
+                            blob.blobId,
+                            new Blob(
+                                blob.foodRadius,
+                                blob.color!,
+                                blob.blobX,
+                                blob.blobY,
+                                blob.blobId,
+                                blob.classify
+                            )
+                        ])),
                     clientPlayers: new Map(
                         parsedMessage.data.otherPlayers.map(player => [
                             player.userId,
@@ -57,35 +62,42 @@ export default function GameRoom() {
                                 player.state.pos.x,
                                 player.state.pos.y,
                                 player.userId,
+                                player.classify,
                                 player.username
                             )
                         ])
                     ),
-                    selfBlob: new Blob(parsedMessage.data.selfPlayer.state.radius, parsedMessage.data.selfPlayer.state.color!, parsedMessage.data.selfPlayer.state.pos.x, parsedMessage.data.selfPlayer.state.pos.y, parsedMessage.data.selfPlayer.userId, parsedMessage.data.selfPlayer.username),
-                    hasGameStarted: true,
+                    selfBlob: new Blob(parsedMessage.data.selfPlayer.state.radius, parsedMessage.data.selfPlayer.state.color!, parsedMessage.data.selfPlayer.state.pos.x, parsedMessage.data.selfPlayer.state.pos.y, parsedMessage.data.selfPlayer.userId, parsedMessage.data.selfPlayer.classify,parsedMessage.data.selfPlayer.username),
+                    // hasGameStarted: true,
                 });
             } else if (parsedMessage.type === 'SPAWN') {
-                const newBlob = parsedMessage.data.blob
-                const currentState = useGameStore.getState();
+                const newFood = parsedMessage.data.blob
 
-                // Check if blob exists
-                const blobExists = currentState.blobs.some(b => b.blobId === newBlob.blobId);
+                const { clientBlobs } = useGameStore.getState();
+                const newBlob = new Blob(
+                    newFood.foodRadius,
+                    newFood.color!,
+                    newFood.blobX,
+                    newFood.blobY,
+                    newFood.blobId,
+                    newFood.classify
+                );
 
-                // Only update if the blob doesn't exist
-                if (!blobExists) {
-                    setGameState({
-                        blobs: [...currentState.blobs, newBlob],
-                        clientBlobs: [...currentState.clientBlobs, new Blob(newBlob.foodRadius, newBlob.color, newBlob.blobX, newBlob.blobY, newBlob.blobId)]
-                    });
-                }
+                const updatedMap = new Map(clientBlobs);
+                updatedMap.set(newFood.blobId, newBlob)
+
+                setGameState({
+                    clientBlobs: updatedMap
+                });
             } else if (parsedMessage.type === 'DESPAWN') {
                 const removeBlobId = parsedMessage.data.blobId
-                const currentState = useGameStore.getState()
-                const updatedBlobs = currentState.blobs.filter(blob => blob.blobId !== removeBlobId);
-                const updatedClientBlobs = currentState.clientBlobs.filter(b => b.userId !== removeBlobId)
+                const { clientBlobs } = useGameStore.getState()
+
+                const updatedMap = new Map(clientBlobs);
+                updatedMap.delete(removeBlobId)
+
                 setGameState({
-                    blobs: updatedBlobs,
-                    clientBlobs: updatedClientBlobs
+                    clientBlobs: updatedMap
                 });
             } else if (parsedMessage.type === 'GAME_OVER') {
                 clientWS.close()
@@ -98,6 +110,7 @@ export default function GameRoom() {
                     newPlayer.state.pos.x,
                     newPlayer.state.pos.y,
                     newPlayer.userId,
+                    newPlayer.classify,
                     newPlayer.username
                 );
 
@@ -105,7 +118,6 @@ export default function GameRoom() {
                 updatedMap.set(newPlayer.userId, newBlob);
 
                 setGameState({
-                    Players: [...currentState.Players, newPlayer],
                     clientPlayers: updatedMap
                 });
 
@@ -118,6 +130,7 @@ export default function GameRoom() {
                     movedPlayer.state.pos.x,
                     movedPlayer.state.pos.y,
                     movedPlayer.userId,
+                    movedPlayer.classify,
                     movedPlayer.username
                 );
 
@@ -125,33 +138,30 @@ export default function GameRoom() {
                 updatedMap.set(movedBlob.userId, movedBlob);
 
                 setGameState({
-                    Players: [...currentState.Players, movedPlayer],
                     clientPlayers: updatedMap
                 });
             } else if (parsedMessage.type === 'LEAVE') {
                 const leftPlayerId = parsedMessage.data.id
-                const { Players, clientPlayers } = useGameStore.getState();
-
-                const updatedPlayers = Players.filter(player => player.userId !== leftPlayerId);
+                const { clientPlayers } = useGameStore.getState();
 
                 const updatedMap = new Map(clientPlayers);
                 updatedMap.delete(leftPlayerId)
 
                 setGameState({
-                    Players: updatedPlayers,
                     clientPlayers: updatedMap
                 });
             } else if (parsedMessage.type === 'EAT') {
-                const {  targetId } = parsedMessage.data;
+                const { targetId } = parsedMessage.data;
 
-                const { clientBlobs, blobs, clientPlayers, Players, selfBlob } = useGameStore.getState()
+                const { clientBlobs, clientPlayers,  selfBlob } = useGameStore.getState()
 
-                const blobIndex = clientBlobs.findIndex(blob => blob.userId === targetId);
-                if (blobIndex !== -1) {
-                    clientBlobs.splice(blobIndex, 1);
-                    setGameState({ clientBlobs: [...clientBlobs] }); 
+                if (clientBlobs.has(targetId)) {
+                    const updatedMap = new Map(clientBlobs);
+                    updatedMap.delete(targetId);
+                    setGameState({ clientBlobs: updatedMap });
                     return;
                 }
+                
 
                 if (clientPlayers.has(targetId)) {
                     const updatedMap = new Map(clientPlayers);
@@ -159,11 +169,12 @@ export default function GameRoom() {
                     setGameState({ clientPlayers: updatedMap });
                     return;
                 }
-
-                if (selfBlob?.userId === targetId) {
-                    alert("You got eaten!");
-                    // You could also trigger a reset or redirect
-                    return;
+                if(selfBlob){
+                    if(selfBlob.userId === targetId){
+                        // alert("[GameRoom]You got eaten!");
+                        selfBlob.isAlive = false;
+                        setGameState({ selfBlob: selfBlob })
+                    }
                 }
             }
         };
@@ -173,10 +184,22 @@ export default function GameRoom() {
         };
     }, [isConnected]);
 
-    if (!isConnected || !clientWS) {
+    useEffect(() => {
+        console.log('SelfBlob is Alive: ', selfBlob?.isAlive)
+        console.log('hasGameStarted: ', hasGameStarted)
+        console.log('isCOnnected: ', isConnected)
+        console.log('clientWs: ', clientWS)
+    }, [selfBlob?.isAlive, hasGameStarted, isConnected, clientWS])
+
+    if (!isConnected || !clientWS ) {
+        if(selfBlob){
+            if(selfBlob.isAlive === false && hasGameStarted === false){
+                alert('You died')
+                return <LandingPage />
+            }
+        }
         return <p className="text-black text-5xl">Connecting...</p>;
     }
-
 
     return (
         <MainCanvas clientWS={clientWS} dimension={dimension} />

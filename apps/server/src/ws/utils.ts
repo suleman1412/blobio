@@ -15,13 +15,13 @@ export function generateRandomColor() {
 }
 export const randomFoodRadius = () => {
     const foodSizeProbability = Math.random()
-    if (foodSizeProbability <= 0.8) {
+    if (foodSizeProbability <= 0.5) {
         return 8
-    } else if (foodSizeProbability <= 0.96) {
+    } else if (foodSizeProbability <= 0.8) {
         return 10
-    } else if (foodSizeProbability <= 0.99) {
+    } else if (foodSizeProbability <= 0.9) {
         return 12
     } else {
-        return 24
+        return 64
     }
 }

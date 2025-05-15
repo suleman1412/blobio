@@ -10,7 +10,7 @@ import { useGameStore, useUserStore } from "@/store/store";
 export default function LandingPage() {
     const [isModalOpen, setIsModalOpen] = useState(true)
     const { username, color, setUserStore } = useUserStore();
-
+    const { setGameState } = useGameStore.getState() 
     const handleStartGame = (e: React.FormEvent) => {
         e.preventDefault();
         
@@ -19,6 +19,7 @@ export default function LandingPage() {
             return;
         }
         setIsModalOpen(false);
+        setGameState({ hasGameStarted: true })
     };
 
     return (

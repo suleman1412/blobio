@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
-import { checkWS, generateRandomColor, randomFoodRadius } from "./utils";
-import { BlobType, GameMessage, PlayerType, UserState } from "@repo/common/schema";
+import { generateRandomColor, randomFoodRadius } from "./utils";
+import { BlobType, GameMessage, UserState } from "@repo/common/schema";
 
 declare global {
 	interface WebSocket {
@@ -37,7 +37,8 @@ export class GameRoom extends DurableObject<Env> {
 			foodRadius: randomFoodRadius(),
 			blobX: Math.random() * 2 * this.gameState.CANVAS_WIDTH - this.gameState.CANVAS_WIDTH,
 			blobY: Math.random() * 2 * this.gameState.CANVAS_HEIGHT - this.gameState.CANVAS_HEIGHT,
-			blobId: randomBlobId
+			blobId: randomBlobId,
+			classify: 'blob'
 		};
 
 		this.gameState.blobs.set(randomBlobId, newBlob);
@@ -62,7 +63,7 @@ export class GameRoom extends DurableObject<Env> {
 			type: 'INIT_GAME',
 			data: {
 				blobs: Array.from(this.gameState.blobs.entries()).map(([id, blob]) => blob),
-				otherPlayers: Array.from(this.connectedUsers.values()).filter( user => user.userId != ws.userId),
+				otherPlayers: Array.from(this.connectedUsers.values()).filter(user => user.userId != ws.userId),
 				selfPlayer: this.connectedUsers.get(ws) ?? (() => { throw new Error('UserState not found for WebSocket'); })()
 			}
 		};
@@ -85,7 +86,7 @@ export class GameRoom extends DurableObject<Env> {
 			}
 		}
 	}
-	private DespawnBlob(ws: WebSocket, blobId: string) {
+	private DespawnBlob(blobId: string) {
 		// Deletes the blob, sends a despawn message to everyone
 		this.gameState.blobs.delete(blobId)
 		const DespawnMessage: GameMessage = {
@@ -101,7 +102,7 @@ export class GameRoom extends DurableObject<Env> {
 		this.connectedUsers.delete(conn);
 		conn.close()
 	}
-	private SpawnBlob(ws: WebSocket) {
+	private SpawnBlob() {
 		const newBlob = this.createFoodBlob()
 
 		// Send a SPAWN message
@@ -166,6 +167,7 @@ export class GameRoom extends DurableObject<Env> {
 				const initialUserState: UserState = {
 					username: parsedMessage.data.name,
 					userId: ws.userId,
+					classify: 'player',
 					state: {
 						radius: this.defaultPlayerRadius,
 						color: parsedMessage.data.color,
@@ -203,6 +205,7 @@ export class GameRoom extends DurableObject<Env> {
 				this.connectedUsers.set(ws, {
 					userId: ws.userId,
 					username: parsedMessage.data.username,
+					classify: 'player',
 					state: {
 						radius: parsedMessage.data.state.radius,
 						pos: {
@@ -224,9 +227,9 @@ export class GameRoom extends DurableObject<Env> {
 
 					// Remove the targetId from the blobs list and send a despawn message to everyone and create a new one to replace
 					const blobId = parsedMessage.data.targetId
-					this.DespawnBlob(ws, blobId)
+					this.DespawnBlob(blobId)
 					// Spawn a new blob randomly and notify all Players
-					this.SpawnBlob(ws)
+					this.SpawnBlob()
 				} else {
 					// TargetId is another Player
 					// Send a GAME_OVER message to the targetId
@@ -243,6 +246,8 @@ export class GameRoom extends DurableObject<Env> {
 					// Socket close, the gameState will be updated automatically in Websocketclose()
 					targetWS.close()
 				}
+			} else if (parsedMessage.type === 'GAME_OVER'){
+				this.broadcastToPlayer(ws, parsedMessage)
 			}
 		} catch (error) {
 			console.error("Error parsing WebSocket message: ", error);
@@ -270,146 +275,3 @@ export class GameRoom extends DurableObject<Env> {
 		this.connectedUsers.delete(ws);
 	}
 }
-
-
-// export class GameRoom extends DurableObject<Env> {
-// 	serverConnections: Set<WebSocket>;
-// 	gameState: {
-// 		blobs: Map<string, BlobType>;
-// 		Players: Map<string, PlayerType>;
-// 		CANVAS_WIDTH: number,
-// 		CANVAS_HEIGHT: number
-// 	};
-// 	responseBody: string
-// 	constructor(ctx: DurableObjectState, env: Env) {
-// 		super(ctx, env);
-// 		this.serverConnections = new Set()
-// 		this.gameState = {
-// 			blobs: new Map(),
-// 			Players: new Map(),
-// 			CANVAS_WIDTH: 3000,
-// 			CANVAS_HEIGHT: 3000
-// 		};
-// 		const existingConnections: WebSocket[] = this.ctx.getWebSockets()
-// 		for (const existingConn of existingConnections) {
-// 			this.serverConnections.add(existingConn)
-// 		}
-// 		for (let i = 0; i <= 800; i++) {
-// 			this.gameState.blobs.set(crypto.randomUUID().toString(), {
-// 				color: generateRandomColor(),
-// 				foodRadius: randomFoodRadius(),
-// 				blobX: Math.random() * 2 * this.gameState.CANVAS_WIDTH - this.gameState.CANVAS_WIDTH,
-// 				blobY: Math.random() * 2 * this.gameState.CANVAS_HEIGHT - this.gameState.CANVAS_HEIGHT
-// 			})
-// 		}
-
-// 		// console.log('100 blobs generated: ', this.gameState.blobs)
-// 		this.responseBody = JSON.stringify({
-// 			blobs: Object.fromEntries(this.gameState.blobs.entries()),
-// 			Players: Object.fromEntries(this.gameState.Players.entries()),
-// 			CANVAS_WIDTH: this.gameState.CANVAS_WIDTH,
-// 			CANVAS_HEIGHT: this.gameState.CANVAS_HEIGHT
-// 		});
-// 	}
-
-
-// 	async fetch(req: Request) {
-// 		const url = new URL(req.url);
-// 		const userId = url.searchParams.get('userId');
-
-// 		if (!userId) {
-// 			return new Response('Missing userId', { status: 400 });
-// 		}
-
-// 		if (this.gameState.Players.has(userId)) {
-// 			console.log(`[GameRoom] Player with userId ${userId} already exists. Cleaning up.`);
-// 			this.gameState.Players.delete(userId);
-// 		}
-
-// 		const websocketPair = new WebSocketPair();
-// 		const [clientWS, serverWS] = Object.values(websocketPair);
-
-// 		if (!serverWS || !clientWS) {
-// 			return new Response('Error creating WebSocket', { status: 500 });
-// 		}
-
-// 		this.ctx.acceptWebSocket(serverWS);
-// 		this.serverConnections.add(serverWS);
-
-// 		this.gameState.Players.set(userId, {
-// 			id: userId,
-// 			color: 'black',
-// 			playerRadius: 32,
-// 			playerX: 0,
-// 			playerY: 0
-// 		});
-
-// 		const freshResponseBody = JSON.stringify({
-// 			blobs: Object.fromEntries(this.gameState.blobs.entries()),
-// 			Players: Object.fromEntries(this.gameState.Players.entries()),
-// 			CANVAS_WIDTH: this.gameState.CANVAS_WIDTH,
-// 			CANVAS_HEIGHT: this.gameState.CANVAS_HEIGHT
-// 		});
-
-// 		serverWS.send(freshResponseBody);
-
-// 		return new Response(null, {
-// 			status: 101,
-// 			webSocket: clientWS
-// 		});
-// 	}
-
-
-// 	webSocketError(serverWS: WebSocket, error: unknown) {
-// 		console.error("webSocketError", error);
-// 		this.serverConnections.delete(serverWS);
-// 	}
-
-// 	webSocketMessage(serverWS: WebSocket, message: string | ArrayBuffer) {
-// 		// console.log("[GameRoom] Incoming message:", message);
-
-// 		let parsedMessage: GameMessage;
-// 		try {
-// 			parsedMessage = JSON.parse(message as string);
-// 		} catch (err) {
-// 			console.error("Invalid JSON message:", err);
-// 			return;
-// 		}
-
-// 		if (parsedMessage.type === "MOVE") {
-// 			const { id, x, y } = parsedMessage.data;
-
-// 			const player = this.gameState.Players.get(id);
-// 			if (player) {
-// 				player.playerX = x;
-// 				player.playerY = y;
-// 				// Update the server copy
-// 				this.gameState.Players.set(id, player);
-// 			}
-
-// 			// Broadcast the player's new position to others
-// 			for (const conn of this.serverConnections) {
-// 				if (conn !== serverWS && conn.readyState === WebSocket.OPEN) {
-// 					conn.send(JSON.stringify({
-// 						type: "MOVE",
-// 						id,
-// 						x,
-// 						y
-// 					}));
-// 				}
-// 			}
-// 		}
-// 	}
-
-
-
-// 	webSocketClose(
-// 		ws: WebSocket,
-// 		_code: number,
-// 		_reason: string,
-// 		_wasClean: boolean
-// 	) {
-// 		console.log("webSocketClose, serverConnections", this.serverConnections);
-// 		this.serverConnections.delete(ws);
-// 	}
-// }

@@ -1,33 +1,24 @@
-import { useGameStore, useUserStore } from "@/store/store";
-import { GameMessage } from "@repo/common/schema";
+import { useGameStore } from "@/store/store";
 import { useEffect, useRef, useState } from "react";
 
 const useWebSocket = (url: string) => {
     const wsRef = useRef<WebSocket | null>(null);
     const [isConnected, setIsConnected] = useState(false);
-    // const {  blobs, Players, setGameState } = useGameStore()
+    const { hasGameStarted, selfBlob } = useGameStore.getState()
 
-    
-    // useEffect(() => {
-    //     console.log('[useWebSocket] Blobs: ', blobs);
-    //     console.log('[useWebSocket] Players: ', Players);
-    // }, [blobs, Players]);
 
     useEffect(() => {
-
         wsRef.current = new WebSocket(url);
         if (!wsRef.current) return;
         const socket = wsRef.current;
 
-
         socket.onopen = () => {
-            // console.log("[useWebsocket] Connection made");
             setIsConnected(true)
         };
 
         socket.onclose = () => {
-            // console.log("Connection closed");
             setIsConnected(false)
+            wsRef.current = null
         };
 
 
@@ -41,6 +32,8 @@ const useWebSocket = (url: string) => {
             }
         };
     }, []);
+
+    
 
     return { ws: wsRef.current, isConnected };
 };

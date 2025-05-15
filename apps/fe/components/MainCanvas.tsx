@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
 import { initGame } from "../game/initGame";
-import { useGameStore, useUserStore } from "@/store/store";
+import { useGameStore } from "@/store/store";
 
 
 export default function MainCanvas({ clientWS, dimension }: {
@@ -9,12 +9,7 @@ export default function MainCanvas({ clientWS, dimension }: {
     dimension: { width: number, height: number }
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const { hasGameStarted } = useGameStore()
-    const { username } = useUserStore()
-
-    useEffect(() => {
-        console.log('hasGameStarted:' ,hasGameStarted)
-    }, [hasGameStarted])
+    const { hasGameStarted, selfBlob } = useGameStore()
 
     useEffect(() => {
         if (!canvasRef.current || !clientWS) return;
@@ -34,12 +29,9 @@ export default function MainCanvas({ clientWS, dimension }: {
                 e.preventDefault();
             }
         };
-
         window.addEventListener("wheel", handleWheel);
         return () => window.removeEventListener("wheel", handleWheel);
     }, []);
-
-
 
 
     return (

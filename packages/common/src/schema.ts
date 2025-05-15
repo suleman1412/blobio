@@ -82,9 +82,10 @@ export type GameMessage = JoinMessage | MoveMessage | EatMessage | LeaveMessage 
 export type BlobType = {
 	color: string,
 	foodRadius: number,
-	blobX: number, 
+	blobX: number,
 	blobY: number,
-	blobId: string
+	blobId: string,
+	classify: 'blob' | 'player'
 }
 
 
@@ -104,9 +105,24 @@ export type serverGameState = {
 export interface UserState {
 	userId: string;
 	username: string;
+	classify: 'blob' | 'player'
 	state: {
 		radius: number;
 		color?: string;
 		pos: { x: number; y: number };
 	};
 }
+
+
+export interface GameState {
+	canvas: HTMLCanvasElement;
+	ctx: CanvasRenderingContext2D;
+	CANVAS_WIDTH: number;
+	CANVAS_HEIGHT: number;
+	mouseCoords: { x: number, y: number }
+	cameraCoords: { x: number, y: number }
+	currentZoom: number;
+	// gameRunning: boolean;
+	clientWS: WebSocket;
+}
+
