@@ -1,13 +1,14 @@
 import { Blob } from "./Blob";
-import generateRandomColor, { clamp, lerp } from "./utils";
+import { clamp, lerp } from "./utils";
+import { generateRandomColor } from "@repo/common/schema";
 
 const spawnedZones = new Set<string>();
 const CHUNK_SIZE = 200; // Size of zones to spawn blobs in
 
 export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number, Player: Blob, blobs: Blob[]) {
     const SPAWN_RADIUS = Math.max(CANVAS_WIDTH, CANVAS_HEIGHT) * clamp(Player.targetR / Player.r, 1, 1.2);
-    const centerX = Player.x;
-    const centerY = Player.y;
+    const centerX = Player.pos.x;
+    const centerY = Player.pos.y;
     
     const randomFoodRadius = () => {
         const scale = clamp(Player.r / 120, 0, 1);
@@ -17,7 +18,7 @@ export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number
         const enemies = Player.r * 1.5
         
         const spawnProbability = clamp(1 - (Player.r - 12) / 148, 0.05, 1); //Probablity of a ANY food spawn  
-        console.log('spawnProbaility: ', spawnProbability)
+        // console.log('spawnProbaility: ', spawnProbability)
         if (Math.random() > spawnProbability) {
             return undefined; // Skip spawning
         }  
@@ -25,9 +26,9 @@ export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number
         const foodSizeProbablity = Math.random()
         if(foodSizeProbablity <= 0.8){
             return smallFood
-        } else if (foodSizeProbablity < 0.9){
+        } else if (foodSizeProbablity > 0.97){
             return mediumFood
-        } else if (foodSizeProbablity <= 0.95){
+        } else if (foodSizeProbablity >= 0.99){
             return largeFood 
         } else {
             return enemies
@@ -52,7 +53,7 @@ export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number
                     const blobY = y * CHUNK_SIZE + Math.random() * CHUNK_SIZE;
                     const foodRadius = randomFoodRadius()
                     if(!foodRadius) return;
-                    blobs.push(new Blob(foodRadius, generateRandomColor(), blobX, blobY));
+                    blobs.push(new Blob(foodRadius, generateRandomColor(), blobX, blobY, 'id', 'blob'));
                 }
             }
         }

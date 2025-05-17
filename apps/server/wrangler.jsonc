@@ -1,0 +1,26 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "server",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-04-18",
+	"migrations": [
+		{
+			"new_sqlite_classes": [
+				"GameRoom"
+			],
+			"tag": "v2"
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"class_name": "GameRoom",
+				"name": "GAME_ROOM"
+			}
+		]
+	},
+	"observability": {
+		"enabled": true
+	},
+
+}

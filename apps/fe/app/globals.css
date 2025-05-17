@@ -1,54 +1,115 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-space-grotesk: var(--space-grotesk); 
-  --font-press-start: var(--press-start);
-  --font-pixelify-sans: var(--font-pixelify-sans)
-}
-
-
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  color: var(--color-background);
 }
 
-@layer utilities {
+@theme {
+  --font-spaceGro: 'Space Grotesk';
+  --font-p2p: 'Press Start 2P';
+  --font-jersey: 'Jersey 25';
+  --font-pixelify-sans: 'Pixelify Sans';
+
+  --color-background: hsl(0 0% 15%);             /* Near Black */
+  --color-foreground: hsl(0 0% 95%);            /* Light Gray */
+  --color-card: hsl(0 0% 25%);                  /* Dark Gray */
+  --color-cardHover: hsl(0 0% 30%);             /* Slightly Lighter Gray */
+  --color-card-foreground: hsl(0 0% 95%);       /* Light Gray */
+  --color-popover: hsl(0 0% 10%);               /* Dark Popover */
+  --color-popover-foreground: hsl(0 0% 95%);    /* Light Gray */
+  --color-primary: hsl(0 0% 95%);               /* Light Gray */
+  --color-primary-foreground: hsl(0 0% 8%);     /* Near Black */
+  --color-secondary: hsl(0 0% 60%);             /* Mid Gray */
+  --color-secondary-foreground: hsl(0 0% 98%);  /* Near White */
+  --color-muted: hsl(0 0% 25%);                 /* Muted Gray */
+  --color-muted-foreground: hsl(0 0% 60%);      /* Gray Text */
+  --color-accent: hsl(0 0% 20%);                /* Accent Gray */
+  --color-accent-foreground: hsl(0 0% 95%);     /* Light Gray */
+  --color-destructive: hsl(0 70% 50%);          /* Red */
+  --color-destructive-foreground: hsl(0 0% 98%);/* Near White */
+  --color-border: hsl(0 0% 25%);                /* Border Gray */
+  --color-input: hsl(0 0% 20%);                 /* Input Background */
+  --color-ring: hsl(0 0% 90%);                  /* Focus Ring */
+  --color-invert: hsl(0 0% 100%);               /* White */
+}
+
+
+
+
+@layer base {
+  @variant dark {
+  --color-background: hsl(0 0% 100%);           /* White */
+  --color-foreground: hsl(0 0% 10%);            /* Charcoal */
+  --color-card: hsl(0 0% 85%);                  /* Light Gray */
+  --color-cardHover: hsl(0 0% 60%);             /* Mid Gray */
+  --color-card-foreground: hsl(0 0% 10%);       /* Charcoal */
+  --color-popover: hsl(0 0% 100%);              /* White */
+  --color-popover-foreground: hsl(0 0% 10%);    /* Charcoal */
+  --color-primary: hsl(0 0% 10%);               /* Charcoal */
+  --color-primary-foreground: hsl(0 0% 98%);    /* Near White */
+  --color-secondary: hsl(0 0% 50%);             /* Medium Gray */
+  --color-secondary-foreground: hsl(0 0% 98%);  /* Near White */
+  --color-muted: hsl(0 0% 85%);                 /* Soft Gray */
+  --color-muted-foreground: hsl(0 0% 40%);      /* Dim Gray */
+  --color-accent: hsl(0 0% 92%);                /* Accent Gray */
+  --color-accent-foreground: hsl(0 0% 10%);     /* Charcoal */
+  --color-destructive: hsl(0 80% 60%);          /* Red */
+  --color-destructive-foreground: hsl(0 0% 98%);/* Near White */
+  --color-border: hsl(0 0% 70%);                /* Border Gray */
+  --color-input: hsl(0 0% 80%);                 /* Input Gray */
+  --color-ring: hsl(0 0% 20%);                  /* Focus Ring */
+  --color-invert: hsl(0 0% 10%);                /* Charcoal */
+  }
+}
+
+
+@layer components {
   .pixelsCanvas {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
   }
+
   .radialCustom {
-    background-image: radial-gradient( var(--background) 2px, var(--foreground) 2px);
+    background-image: radial-gradient(var(--color-background) 2px, var(--color-foreground) 2px);
     background-size: 60px 60px;
   }
-  .gridPattern{
-    background-image: linear-gradient(to_right,var(--background) 2px, var(--foreground) 2px), linear-gradient(to_bottom, var(--background) 2px, var(--foreground) 2px);
+
+
+  .gridPattern {
+    background-image:
+      linear-gradient(to right, var(--color-background) 2px, var(--color-foreground) 2px),
+      linear-gradient(to bottom, var(--color-background) 2px, var(--color-foreground) 2px);
     background-size: 14px 24px;
   }
+
   .p2p {
     font-family: var(--font-press-start);
+    letter-spacing: -1px;
   }
+
   .spaceGro {
     font-family: var(--font-space-grotesk);
   }
-  .pixelifySans{
-    font-family: var( --font-pixelify-sans);
+
+  .pixelifySans {
+    font-family: var(--font-pixelify-sans);
   }
+
+  .jersey {
+    font-family: var(--font-jersey);
+    letter-spacing: 5px;
+  }
+
+  .shadow {
+    color: var(--color-secondary);
+    text-shadow:
+      2px 2px 0 var(--color-black),
+      6px 6px 0 var(--color-black);
+  }
+
 }

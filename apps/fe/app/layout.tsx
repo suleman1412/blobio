@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import {  Pixelify_Sans, Press_Start_2P, Space_Grotesk } from "next/font/google";
+import { Jersey_25, Pixelify_Sans, Press_Start_2P, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const spaceGro = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
+
+const jersey25 = Jersey_25({
+  variable: "--font-jersey",
+  weight: ['400'],
+  subsets: ['latin']
+})
 
 const p2pfont = Press_Start_2P({
   variable: "--font-press-start",
@@ -14,7 +21,7 @@ const p2pfont = Press_Start_2P({
 })
 
 const pixelifySans = Pixelify_Sans({
-  variable: '--font-pixelify-sans', 
+  variable: '--font-pixelify-sans',
   subsets: ['latin']
 })
 
@@ -30,11 +37,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${p2pfont.variable} ${pixelifySans.variable} ${spaceGro.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <ThemeProvider>
+        <body
+          className={`${p2pfont.variable} ${pixelifySans.variable} ${spaceGro.variable} ${jersey25.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </ThemeProvider>
     </html>
   );
 }

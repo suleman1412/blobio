@@ -1,12 +1,13 @@
 import { Blob } from "./Blob";
 
 export function drawGrid(ctx: CanvasRenderingContext2D, Player: Blob, CANVAS_WIDTH: number, CANVAS_HEIGHT:number, currentZoom: number) {
+    // Grid settings
     const gridSize = 50; 
     const gridColor = "#bdbdbd";
     
     // Get visible area boundaries based on camera position
-    const startX = Math.floor(Player.x / gridSize) * gridSize - (CANVAS_WIDTH / 2 / currentZoom);
-    const startY = Math.floor(Player.y / gridSize) * gridSize - (CANVAS_HEIGHT / 2 / currentZoom);
+    const startX = Math.floor(Player.pos.x / gridSize) * gridSize - (CANVAS_WIDTH / 2 / currentZoom);
+    const startY = Math.floor(Player.pos.y / gridSize) * gridSize - (CANVAS_HEIGHT / 2 / currentZoom);
     const endX = startX + (CANVAS_WIDTH / currentZoom) + gridSize;
     const endY = startY + (CANVAS_HEIGHT / currentZoom) + gridSize;
     
