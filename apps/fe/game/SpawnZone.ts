@@ -10,7 +10,6 @@ export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number
     const centerX = Player.pos.x;
     const centerY = Player.pos.y;
     
-    // const growthRatio = (Player.r / Player.targetR) * 0.80
     const randomFoodRadius = () => {
         const scale = clamp(Player.r / 120, 0, 1);
         const smallFood = lerp(6, Math.cbrt(Player.r), scale);
@@ -36,8 +35,6 @@ export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number
         }
         
     }
-    
-
     const startX = Math.floor((centerX - SPAWN_RADIUS) / CHUNK_SIZE);
     const endX = Math.floor((centerX + SPAWN_RADIUS) / CHUNK_SIZE);
     const startY = Math.floor((centerY - SPAWN_RADIUS) / CHUNK_SIZE);
