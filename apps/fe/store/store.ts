@@ -1,5 +1,5 @@
 import { Blob } from '@/game/Blob';
-import { generateRandomColor } from '@/game/utils';
+import { generateRandomColor } from '@repo/common/schema';
 import { create } from 'zustand'
 
 type ServerGameState = {

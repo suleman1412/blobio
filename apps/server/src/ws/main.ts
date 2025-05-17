@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
-import { generateRandomColor, randomFoodRadius } from "./utils";
+import { randomFoodRadius } from "./utils";
+import { generateRandomColor } from '@repo/common/schema';
 import { BlobType, GameMessage, UserState } from "@repo/common/schema";
 
 declare global {

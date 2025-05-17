@@ -8,7 +8,8 @@ import { Blob } from "@/game/Blob";
 import LandingPage from "./LandingPage";
 
 export default function GameRoom() {
-    const { ws: clientWS, isConnected } = useWebSocket('ws://localhost:8787/connect/ws/default');
+    // TODO: need to work on room creation to propogate from frontend if  registered / authorized user
+    const { ws: clientWS, isConnected } = useWebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/connect/ws/defaultRoom`); 
     const { selfBlob, hasGameStarted, serverConnectionMade, setGameState } = useGameStore();
     const { username, color } = useUserStore();
     const [dimension, setDimensions] = useState({ width: 0, height: 0 });
