@@ -7,7 +7,7 @@ export default function gameLoop(state: GameState) {
     const { ctx, mouseCoords, cameraCoords, CANVAS_WIDTH, CANVAS_HEIGHT, clientWS, } = state;
     let { currentZoom } = state
 
-    const { selfBlob, clientPlayers, clientBlobs, setGameState } = useGameStore.getState()
+    const { selfBlob, clientPlayers, clientBlobs, serverConnectionMade, setGameState } = useGameStore.getState()
     if (!selfBlob) return;
 
     const MAX_DISTANCE = Math.max(CANVAS_WIDTH, CANVAS_HEIGHT) * clamp(selfBlob.targetR / selfBlob.r, 1.2, 2);
@@ -46,6 +46,7 @@ export default function gameLoop(state: GameState) {
     drawGrid(ctx, selfBlob, CANVAS_WIDTH, CANVAS_HEIGHT, currentZoom)
 
 
+
     for (const [id, blob] of clientBlobs) {
         const dx = selfBlob.pos.x - blob.pos.x;
         const dy = selfBlob.pos.y - blob.pos.y;
@@ -59,7 +60,7 @@ export default function gameLoop(state: GameState) {
             updatedFood.delete(id)
             setGameState({ clientBlobs: updatedFood })
         } else if (eatCondition === 0) {
-            setGameState({ hasGameStarted: false})
+            setGameState({ hasGameStarted: false, serverConnectionMade: false })
             // console.log('when the food is bigger')
             break;
         }
@@ -77,6 +78,7 @@ export default function gameLoop(state: GameState) {
             if(eatCondition){
                 setGameState({
                     clientPlayers: updatedPlayers,
+                    serverConnectionMade: false
                 })
                 // console.log('player got eaten')
             } 

@@ -6,8 +6,8 @@ type ServerGameState = {
   clientPlayers: Map<string, Blob>;
   selfBlob: Blob | undefined;
   hasGameStarted: boolean;
-  renderCanvasFlag: boolean;
-  setGameState: ( data: Partial<Pick<ServerGameState, 'hasGameStarted' | 'clientBlobs' | 'clientPlayers' | 'selfBlob' | 'renderCanvasFlag'>> ) => void;
+  serverConnectionMade: boolean;
+  setGameState: ( data: Partial<Pick<ServerGameState, 'hasGameStarted' | 'clientBlobs' | 'clientPlayers' | 'selfBlob' | 'serverConnectionMade' >> ) => void;
 };
 
 export const useGameStore = create<ServerGameState>((set) => ({
@@ -15,7 +15,7 @@ export const useGameStore = create<ServerGameState>((set) => ({
   clientPlayers: new Map(),
   hasGameStarted: false,
   selfBlob: undefined,
-  renderCanvasFlag: false,
+  serverConnectionMade: false,
   setGameState: (data) => set(data)
 }));
 

@@ -1,15 +1,16 @@
 "use client"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { initGame } from "../game/initGame";
 import { useGameStore } from "@/store/store";
 
 
-export default function MainCanvas({ clientWS, dimension }: {
+export default function MainCanvas({ clientWS, isConnected, dimension }: {
     clientWS: WebSocket,
+    isConnected: boolean,
     dimension: { width: number, height: number }
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const { hasGameStarted, renderCanvasFlag, selfBlob } = useGameStore()
+    const { hasGameStarted, selfBlob, clientPlayers, serverConnectionMade } = useGameStore()
 
     useEffect(() => {
         if (!canvasRef.current || !clientWS) return;
@@ -20,7 +21,7 @@ export default function MainCanvas({ clientWS, dimension }: {
                 gameInstance.cleanup()
             }
         }
-    }, [selfBlob?.isAlive]);
+    }, [isConnected, selfBlob?.isAlive, serverConnectionMade ]);
 
     useEffect(() => {
         const handleWheel = (e: WheelEvent) => {
@@ -35,9 +36,29 @@ export default function MainCanvas({ clientWS, dimension }: {
 
     return (
         <div>
-            <canvas ref={canvasRef} width={dimension.width} height={dimension.height} className="border-2 pixelsCanvas overflow-x-hidden overflow-y-hidden">
+            <canvas ref={canvasRef} width={dimension.width} height={dimension.height} className="pixelsCanvas ">
                 Canvas for BlobIo
             </canvas>
+            <div className="absolute top-4 right-4 z-10 w-64 h-80 p-4 text-black rounded-xl shadow-lg backdrop-blur-md">
+                <h2 className="text-xl font-bold mb-2">
+                    Leaderboard
+                </h2>
+                <ul className="space-y-1 text-sm font-medium">
+                    {[
+                        ...(selfBlob ? [selfBlob] : []),
+                        ...Array.from(clientPlayers.values())
+                    ]
+                        .sort((a, b) => b.r - a.r) 
+                        .slice(0, 10) // Top 10
+                        .map((player, index) => (
+                            <li key={player.userId} className="flex justify-between">
+                                <span>{index + 1}. {player.label || 'Unnamed'}</span>
+                                <span>{Math.round(player.r)}</span>
+                            </li>
+                        ))}
+                </ul>
+
+            </div>
         </div>
     )
 }

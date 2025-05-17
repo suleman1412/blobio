@@ -12,10 +12,10 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
 
     let gameLoopAnimation: number;
 
-    const { selfBlob } = useGameStore.getState()
+    const { selfBlob, serverConnectionMade, setGameState } = useGameStore.getState()
 
 
-    const state : GameState = {
+    const state: GameState = {
         canvas,
         ctx,
         CANVAS_WIDTH,
@@ -42,11 +42,12 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('wheel', handleWheel);
     // HANDLER OVER
-
+    
+    if(!serverConnectionMade) return;
     const gameLoopWrapper = () => {
         gameLoop(state);
         gameLoopAnimation = requestAnimationFrame(gameLoopWrapper)
-        if ( selfBlob?.isAlive == false) {
+        if (selfBlob?.isAlive == false) {
             cancelAnimationFrame(gameLoopAnimation)
         }
     }

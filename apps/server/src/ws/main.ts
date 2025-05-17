@@ -136,7 +136,7 @@ export class GameRoom extends DurableObject<Env> {
 
 		setInterval(() => {
 			console.log('Total JOINED users: ', this.connectedUsers.size)
-		}, 10000)
+		}, 5000)
 		return new Response(null, {
 			status: 101,
 			webSocket: clientWS
@@ -172,10 +172,10 @@ export class GameRoom extends DurableObject<Env> {
 						radius: this.defaultPlayerRadius,
 						color: parsedMessage.data.color,
 						pos: {
-							x: Math.random() * 100 * 2 - 100,
-							y: Math.random() * 100 * 2 - 100
-							// x: Math.random() * this.gameState.CANVAS_WIDTH * 2 - this.gameState.CANVAS_WIDTH,
-							// y: Math.random() * this.gameState.CANVAS_HEIGHT * 2 - this.gameState.CANVAS_HEIGHT
+							// x: Math.random() * 100 * 2 - 100,
+							// y: Math.random() * 100 * 2 - 100
+							x: Math.random() * this.gameState.CANVAS_WIDTH * 2 - this.gameState.CANVAS_WIDTH,
+							y: Math.random() * this.gameState.CANVAS_HEIGHT * 2 - this.gameState.CANVAS_HEIGHT
 						}
 					}
 				};

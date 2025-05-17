@@ -88,6 +88,10 @@ export class Blob {
         this.pos.x += scaledVel.x;
         this.pos.y += scaledVel.y;
 
+        const halfWorldSize = 3000;
+        this.pos.x = clamp(this.pos.x, -halfWorldSize + this.r, halfWorldSize - this.r);
+        this.pos.y = clamp(this.pos.y, -halfWorldSize + this.r, halfWorldSize - this.r);
+
         if (this.isMoving) {
             this.sendMoveMessage(ws)
         }
@@ -130,7 +134,7 @@ export class Blob {
         const distanceBwTwo = distance(this.pos, other.pos);
         const { selfBlob, setGameState } = useGameStore.getState();
 
-        if (distanceBwTwo > this.r + other.r) return false; 
+        if (distanceBwTwo > this.r + other.r) return false;
 
         console.log('[eats] collision detected');
         const combinedR = Math.sqrt(this.r ** 2 + other.r ** 2);
@@ -157,7 +161,7 @@ export class Blob {
             return 0;
         }
 
-        return false; 
+        return false;
     }
 
 

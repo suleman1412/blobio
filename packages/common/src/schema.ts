@@ -85,7 +85,7 @@ export type BlobType = {
 	blobX: number,
 	blobY: number,
 	blobId: string,
-	classify: 'blob' | 'player'
+	classify: 'blob'
 }
 
 
@@ -105,7 +105,7 @@ export type serverGameState = {
 export interface UserState {
 	userId: string;
 	username: string;
-	classify: 'blob' | 'player'
+	classify: 'player'
 	state: {
 		radius: number;
 		color?: string;

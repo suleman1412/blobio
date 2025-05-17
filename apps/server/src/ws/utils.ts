@@ -22,6 +22,6 @@ export const randomFoodRadius = () => {
     } else if (foodSizeProbability <= 0.9) {
         return 12
     } else {
-        return 64
+        return 48
     }
 }

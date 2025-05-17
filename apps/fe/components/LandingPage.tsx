@@ -10,10 +10,10 @@ import { useGameStore, useUserStore } from "@/store/store";
 export default function LandingPage() {
     const [isModalOpen, setIsModalOpen] = useState(true)
     const { username, color, setUserStore } = useUserStore();
-    const { setGameState } = useGameStore.getState() 
+    const { setGameState } = useGameStore.getState()
     const handleStartGame = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (username.trim() === '') {
             alert('Username is empty');
             return;
@@ -28,7 +28,7 @@ export default function LandingPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.4, ease: easeInOut }}
         >
-            <div className="min-h-screen relative flex items-center justify-center p-4">
+            <div className="min-h-screen relative flex items-center justify-center">
                 {isModalOpen ? (
                     <div className="w-full max-w-md">
                         <Circles />

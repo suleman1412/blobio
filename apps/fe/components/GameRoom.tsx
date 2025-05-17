@@ -9,7 +9,7 @@ import LandingPage from "./LandingPage";
 
 export default function GameRoom() {
     const { ws: clientWS, isConnected } = useWebSocket('ws://localhost:8787/connect/ws/default');
-    const { selfBlob, hasGameStarted, setGameState } = useGameStore();
+    const { selfBlob, hasGameStarted, serverConnectionMade, setGameState } = useGameStore();
     const { username, color } = useUserStore();
     const [dimension, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -38,6 +38,7 @@ export default function GameRoom() {
         clientWS.send(JSON.stringify(joinMessage));
 
         clientWS.onmessage = (ev: MessageEvent) => {
+            setGameState({ serverConnectionMade: true })
             const parsedMessage: GameMessage = JSON.parse(ev.data);
             if (parsedMessage.type === 'INIT_GAME') {
                 setGameState({
@@ -189,6 +190,7 @@ export default function GameRoom() {
             SelfBlob is Alive: ${selfBlob?.isAlive} 
             hasGameStarted: ${hasGameStarted} 
             isConnected: ${isConnected}
+            serverConnectionMade: ${serverConnectionMade}
             clientWs:`, clientWS)
     }, [selfBlob?.isAlive, hasGameStarted, isConnected, clientWS])
 
@@ -203,6 +205,6 @@ export default function GameRoom() {
     }
 
     return (
-        <MainCanvas clientWS={clientWS} dimension={dimension} />
+        <MainCanvas clientWS={clientWS} isConnected={isConnected} dimension={dimension} />
     );
 }
