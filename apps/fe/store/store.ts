@@ -1,5 +1,6 @@
 import { Blob } from '@/game/Blob';
 import { generateRandomColor } from '@repo/common/schema';
+import randomName from '@scaleway/random-name';
 import { create } from 'zustand'
 
 type ServerGameState = {
@@ -28,7 +29,7 @@ interface UserStore {
 }
 
 export const useUserStore = create<UserStore>((set) => ({
-  username: 's',
+  username: randomName(),
   color: generateRandomColor(),
   setUserStore: (data) => set(data)
 }));
