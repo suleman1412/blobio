@@ -1,5 +1,6 @@
 import { Blob } from "./Blob";
-import { generateRandomColor, clamp, lerp } from "./utils";
+import { clamp, lerp } from "./utils";
+import { generateRandomColor } from "@repo/common/schema";
 
 const spawnedZones = new Set<string>();
 const CHUNK_SIZE = 200; // Size of zones to spawn blobs in
