@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@repo/common": "workspace:*",
+    "@repo/ui": "workspace:*",
     "clsx": "^2.1.1",
     "framer-motion": "^12.7.3",
     "lucide-react": "^0.488.0",

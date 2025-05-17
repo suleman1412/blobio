@@ -8,7 +8,6 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
     if (!ctx) return;
 
     ctx.imageSmoothingEnabled = false;
-    canvas.style.backgroundColor = 'white'
 
     let gameLoopAnimation: number;
 

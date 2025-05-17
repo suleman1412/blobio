@@ -1,4 +1,5 @@
 import { Blob } from '@/game/Blob';
+import { generateRandomColor } from '@/game/utils';
 import { create } from 'zustand'
 
 type ServerGameState = {
@@ -27,7 +28,7 @@ interface UserStore {
 }
 
 export const useUserStore = create<UserStore>((set) => ({
-  username: 'suleman',
-  color: '#282828',
+  username: 's',
+  color: generateRandomColor(),
   setUserStore: (data) => set(data)
 }));

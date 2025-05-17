@@ -1,5 +1,5 @@
 import { Blob } from "./Blob";
-import generateRandomColor, { clamp, lerp } from "./utils";
+import { generateRandomColor, clamp, lerp } from "./utils";
 
 const spawnedZones = new Set<string>();
 const CHUNK_SIZE = 200; // Size of zones to spawn blobs in
@@ -55,7 +55,7 @@ export function spawnBlobsNearPlayer(CANVAS_WIDTH: number, CANVAS_HEIGHT: number
                     const blobY = y * CHUNK_SIZE + Math.random() * CHUNK_SIZE;
                     const foodRadius = randomFoodRadius()
                     if(!foodRadius) return;
-                    blobs.push(new Blob(foodRadius, generateRandomColor(), blobX, blobY, 'dsa'));
+                    blobs.push(new Blob(foodRadius, generateRandomColor(), blobX, blobY, 'id', 'blob'));
                 }
             }
         }

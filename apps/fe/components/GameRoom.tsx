@@ -201,7 +201,7 @@ export default function GameRoom() {
                 return <LandingPage />
             }
         }
-        return <p className="text-black text-5xl">Connecting...</p>;
+        return <p className="text-background text-5xl">Connecting...</p>;
     }
 
     return (

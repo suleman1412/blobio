@@ -36,14 +36,14 @@ export default function MainCanvas({ clientWS, isConnected, dimension }: {
 
     return (
         <div>
-            <canvas ref={canvasRef} width={dimension.width} height={dimension.height} className="pixelsCanvas ">
+            <canvas ref={canvasRef} width={dimension.width} height={dimension.height} className="pixelsCanvas bg-foreground">
                 Canvas for BlobIo
             </canvas>
-            <div className="absolute top-4 right-4 z-10 w-64 h-80 p-4 text-black rounded-xl shadow-lg backdrop-blur-md">
-                <h2 className="text-xl font-bold mb-2">
+            <div className="absolute top-4 right-4 z-10 w-64 h-80 p-4 text-background font-spaceGro rounded-xl shadow-lg backdrop-blur-md">
+                <h2 className="text-2xl font-bold mb-2">
                     Leaderboard
                 </h2>
-                <ul className="space-y-1 text-sm font-medium">
+                <ul className="space-y-2 text-md font-spaceGro font-medium">
                     {[
                         ...(selfBlob ? [selfBlob] : []),
                         ...Array.from(clientPlayers.values())
