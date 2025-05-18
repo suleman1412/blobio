@@ -189,14 +189,14 @@ export default function GameRoom() {
 
     if (selfBlob?.isAlive === false) {
         alert('You died');
-        setGameState({ selfBlob: undefined, hasGameStarted: false });
+        setGameState({ selfBlob: undefined });
     }
 
     if (hasGameStarted && (!clientWS || !isConnected)) {
         return <p className="text-background text-5xl">Connecting...</p>;
     }
 
-    if (!hasGameStarted || selfBlob === undefined) {
+    if (!hasGameStarted && selfBlob === undefined) {
         return <LandingPage />;
     }
 
