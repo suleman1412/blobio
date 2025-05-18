@@ -133,11 +133,11 @@ export class GameRoom extends DurableObject<Env> {
 		// Pinning the server generated userIds from connectRouter to respective WS
 		serverWS.userId = userId;
 
-		console.log('pair created')
+		// console.log('pair created')
 
-		setInterval(() => {
-			console.log('Total JOINED users: ', this.connectedUsers.size)
-		}, 5000)
+		// setInterval(() => {
+		// 	console.log('Total JOINED users: ', this.connectedUsers.size)
+		// }, 5000)
 		return new Response(null, {
 			status: 101,
 			webSocket: clientWS
