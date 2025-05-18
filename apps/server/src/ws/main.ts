@@ -220,7 +220,7 @@ export class GameRoom extends DurableObject<Env> {
 
 			} else if (parsedMessage.type === 'EAT') {
 				this.broadcastToOthers(ws, parsedMessage)
-				console.log('EAT detected', parsedMessage)
+				// console.log('EAT detected', parsedMessage)
 
 				// Check if the targetId was a blob or a player
 				// To check if it was a blob: 
@@ -268,7 +268,7 @@ export class GameRoom extends DurableObject<Env> {
 
 		this.broadcastToAll(leaveMessage);
 
-		console.log(`Player ${ws.userId} disconnected. ${this.connectedUsers.size} players remaining.`);
+		// console.log(`Player ${ws.userId} disconnected. ${this.connectedUsers.size} players remaining.`);
 	}
 
 	webSocketError(ws: WebSocket, err: any) {
