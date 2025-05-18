@@ -17,8 +17,8 @@ connectRouter.get("/ws/:roomId", async (c) => {
     
     
     const userId = crypto.randomUUID().toString() 
-    console.log('[connectRouter /ws/:roomId] roomId = ', roomId)
-    console.log('[connectRouter /ws/:roomId] userId = ', userId)
+    // console.log('[connectRouter /ws/:roomId] roomId = ', roomId)
+    // console.log('[connectRouter /ws/:roomId] userId = ', userId)
 
     const id = c.env.GAME_ROOM.idFromName(roomId)
     const stub = c.env.GAME_ROOM.get(id)

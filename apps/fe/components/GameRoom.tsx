@@ -187,17 +187,22 @@ export default function GameRoom() {
     }, [isConnected]);
 
 
-    if (!isConnected || !clientWS) {
-        if (selfBlob) {
-            if (selfBlob.isAlive === false && hasGameStarted === false) {
-                alert('You died')
-                return <LandingPage />
-            }
-        }
+    if (selfBlob?.isAlive === false) {
+        alert('You died');
+        setGameState({ selfBlob: undefined, hasGameStarted: false });
+    }
+
+    if (hasGameStarted && (!clientWS || !isConnected)) {
         return <p className="text-background text-5xl">Connecting...</p>;
     }
 
+    if (!hasGameStarted || selfBlob === undefined) {
+        return <LandingPage />;
+    }
+
     return (
-        <MainCanvas clientWS={clientWS} isConnected={isConnected} dimension={dimension} />
+        <MainCanvas clientWS={clientWS!} isConnected={isConnected} dimension={dimension} />
     );
+
+
 }

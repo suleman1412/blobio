@@ -5,7 +5,7 @@ import { verify } from "hono/jwt";
 export default async function authMiddleware(c: Context, next: Next) {
 
     const token = c.req.query('token')
-    console.log('in authMiddlware, token: ',token)
+    // console.log('in authMiddlware, token: ',token)
     
     if (!token || !token.startsWith('Bearer ')) {
         return c.json({ error: 'Unauthorized - Invalid token format' }, 401);
@@ -19,7 +19,7 @@ export default async function authMiddleware(c: Context, next: Next) {
     try {
         const decoded = await verify(actualToken, JWT_SECRET)
         // @ts-ignore
-        console.log(decoded.id)
+        // console.log(decoded.id)
         c.set('userId', decoded.id);
         await next();
     } catch (error) {

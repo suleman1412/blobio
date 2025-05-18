@@ -19,14 +19,14 @@ const useWebSocket = (url: string) => {
             return;
         }
 
-        console.log('Creating WebSocket connection');
+        // console.log('Creating WebSocket connection');
         connectionAttemptedRef.current = true;
         wsRef.current = new WebSocket(url);
 
         const socket = wsRef.current;
 
         socket.onopen = () => {
-            console.log('WebSocket connected');
+            // console.log('WebSocket connected');
             connectionAttemptedRef.current = false;
             if (socket.readyState === WebSocket.OPEN) {
                 setIsConnected(true);
@@ -34,7 +34,7 @@ const useWebSocket = (url: string) => {
         };
 
         socket.onclose = () => {
-            console.log('WebSocket closed');
+            // console.log('WebSocket closed');
             setIsConnected(false);
             connectionAttemptedRef.current = false;
         };

@@ -35,7 +35,7 @@ export default function gameLoop(state: GameState) {
     if (Math.abs(state.currentZoom - zoomFactor) < 0.001 || selfBlob.isMoving) {
         state.currentZoom = lerp(state.currentZoom, zoomFactor, 0.001);
     }
-    console.log(state.currentZoom, zoomFactor)
+    // console.log(state.currentZoom, zoomFactor)
     ctx.scale(state.currentZoom, state.currentZoom)
     ctx.translate(-selfBlob.pos.x, -selfBlob.pos.y)
 
