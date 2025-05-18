@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react"
 import { initGame } from "../game/initGame";
 import { useGameStore } from "@/store/store";
+import { useTheme } from "@/context/ThemeContext";
 
 
 export default function MainCanvas({ clientWS, isConnected, dimension }: {
@@ -10,12 +11,13 @@ export default function MainCanvas({ clientWS, isConnected, dimension }: {
     dimension: { width: number, height: number }
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const { BGMRef } = useTheme()
     const { hasGameStarted, selfBlob, clientPlayers, serverConnectionMade } = useGameStore()
 
     useEffect(() => {
         if (!canvasRef.current || !clientWS) return;
         if (!hasGameStarted) return;
-        const gameInstance = initGame(canvasRef.current, dimension.width, dimension.height, clientWS);
+        const gameInstance = initGame(canvasRef.current, dimension.width, dimension.height, clientWS, BGMRef);
         return () => {
             if (gameInstance?.cleanup) {
                 gameInstance.cleanup()

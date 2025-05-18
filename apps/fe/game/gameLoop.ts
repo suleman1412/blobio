@@ -5,7 +5,6 @@ import { GameState } from '@repo/common/schema'
 
 export default function gameLoop(state: GameState) {
     const { ctx, mouseCoords, cameraCoords, CANVAS_WIDTH, CANVAS_HEIGHT, clientWS, } = state;
-    let { currentZoom } = state
 
     const { selfBlob, clientPlayers, clientBlobs, serverConnectionMade, setGameState } = useGameStore.getState()
     if (!selfBlob) return;
@@ -33,17 +32,14 @@ export default function gameLoop(state: GameState) {
     // To 
     ctx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2)
 
-
-    if (Math.abs(currentZoom - zoomFactor) < 0.001) {
-        currentZoom = zoomFactor;
-    } else {
-        currentZoom = lerp(currentZoom, zoomFactor, 0.01);
+    if (Math.abs(state.currentZoom - zoomFactor) < 0.001 || selfBlob.isMoving) {
+        state.currentZoom = lerp(state.currentZoom, zoomFactor, 0.001);
     }
-
-    ctx.scale(currentZoom, currentZoom)
+    console.log(state.currentZoom, zoomFactor)
+    ctx.scale(state.currentZoom, state.currentZoom)
     ctx.translate(-selfBlob.pos.x, -selfBlob.pos.y)
 
-    drawGrid(ctx, selfBlob, CANVAS_WIDTH, CANVAS_HEIGHT, currentZoom)
+    drawGrid(ctx, selfBlob, CANVAS_WIDTH, CANVAS_HEIGHT, state.currentZoom)
 
 
 

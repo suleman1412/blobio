@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { easeInOut, motion } from "framer-motion";
 import Circles from "../ui/Circles";
 import GameRoom from "./GameRoom";
@@ -9,21 +9,26 @@ import Tutorial from "@/ui/Tutorial";
 import Header from "@/ui/Header";
 import Modal from "@/ui/Modal";
 import Form from "@/ui/Form";
-import Button from "@/ui/Button";
 import ThemeToggle from "@/ui/ThemeToggle";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function LandingPage() {
     const [isModalOpen, setIsModalOpen] = useState(true)
     const { username } = useUserStore();
     const { setGameState } = useGameStore.getState()
+    const { BGMRef } = useTheme()
     const handleStartGame = (e: React.FormEvent) => {
         e.preventDefault();
         if (username.trim() === '') {
             alert('Username is empty');
             return;
         }
-        setIsModalOpen(false);
-        setGameState({ hasGameStarted: true })
+        BGMRef.current?.play().then(() => {
+            setGameState({ hasGameStarted: true });
+            setTimeout(() => {
+                setIsModalOpen(false);
+            }, 300)
+        })
     };
 
     return (

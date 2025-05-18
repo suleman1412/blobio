@@ -9,11 +9,10 @@ import LandingPage from "./LandingPage";
 
 export default function GameRoom() {
     // TODO: need to work on room creation to propogate from frontend if  registered / authorized user
-    const { ws: clientWS, isConnected } = useWebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/connect/ws/defaultRoom`); 
+    const { ws: clientWS, isConnected } = useWebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/connect/ws/defaultRoom`);
     const { selfBlob, hasGameStarted, serverConnectionMade, setGameState } = useGameStore();
     const { username, color } = useUserStore();
     const [dimension, setDimensions] = useState({ width: 0, height: 0 });
-
     // Set dimensions on mount and on resize
     useEffect(() => {
         function updateDimensions() {
@@ -28,6 +27,7 @@ export default function GameRoom() {
     // Join message and message listener
     useEffect(() => {
         if (!isConnected || !clientWS) return;
+
 
         const joinMessage: GameMessage = {
             type: 'JOIN',
@@ -186,14 +186,6 @@ export default function GameRoom() {
         };
     }, [isConnected]);
 
-    useEffect(() => {
-        console.log(`
-            SelfBlob is Alive: ${selfBlob?.isAlive} 
-            hasGameStarted: ${hasGameStarted} 
-            isConnected: ${isConnected}
-            serverConnectionMade: ${serverConnectionMade}
-            clientWs:`, clientWS)
-    }, [selfBlob?.isAlive, hasGameStarted, isConnected, clientWS])
 
     if (!isConnected || !clientWS) {
         if (selfBlob) {

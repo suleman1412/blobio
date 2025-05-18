@@ -3,8 +3,8 @@ import { Blob } from "./Blob";
 export function drawGrid(ctx: CanvasRenderingContext2D, Player: Blob, CANVAS_WIDTH: number, CANVAS_HEIGHT:number, currentZoom: number) {
     // Grid settings
     const gridSize = 50; 
-    const gridColor = "#bdbdbd";
-    
+    const rootStyles = getComputedStyle(document.documentElement)
+    const strokeColor = rootStyles.getPropertyValue('--color-secondary').trim()
     // Get visible area boundaries based on camera position
     const startX = Math.floor(Player.pos.x / gridSize) * gridSize - (CANVAS_WIDTH / 2 / currentZoom);
     const startY = Math.floor(Player.pos.y / gridSize) * gridSize - (CANVAS_HEIGHT / 2 / currentZoom);
@@ -12,7 +12,7 @@ export function drawGrid(ctx: CanvasRenderingContext2D, Player: Blob, CANVAS_WID
     const endY = startY + (CANVAS_HEIGHT / currentZoom) + gridSize;
     
     // Set line style
-    ctx.strokeStyle = gridColor;
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 0.5;
     ctx.beginPath();
     
