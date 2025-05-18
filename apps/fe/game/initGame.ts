@@ -1,4 +1,4 @@
-import { useGameStore } from "@/store/store";
+import { useGameStore, useUserStore } from "@/store/store";
 import gameLoop from "./gameLoop";
 import { GameState } from '@repo/common/schema'
 import { RefObject } from "react";
@@ -12,8 +12,7 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
 
     let gameLoopAnimation: number;
 
-    const { selfBlob, serverConnectionMade, setGameState } = useGameStore.getState()
-
+    const { selfBlob, serverConnectionMade } = useGameStore.getState()
 
     const state: GameState = {
         canvas,
@@ -23,7 +22,6 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
         mouseCoords: { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2 },
         cameraCoords: { x: 0, y: 0 },
         currentZoom: 2,
-        // gameRunning: true,
         clientWS
     };
 
@@ -44,11 +42,6 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
     // HANDLER OVER
     
     if(!serverConnectionMade) return;
-    // BGMAudio.loop = true
-    // BGMAudio.volume = 0.5
-    // BGMAudio.play().catch(err => {
-    //     console.warn("Audio play failed:", err);
-    // });
     const gameLoopWrapper = () => {
         gameLoop(state);
         gameLoopAnimation = requestAnimationFrame(gameLoopWrapper)
