@@ -1,5 +1,4 @@
 import { Gamepad2 } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   return (

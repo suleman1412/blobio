@@ -1,9 +1,10 @@
 import { useGameStore } from "@/store/store";
 import gameLoop from "./gameLoop";
 import { GameState } from '@repo/common/schema'
+import { RefObject } from "react";
 
 
-export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS_HEIGHT: number, clientWS: WebSocket) {
+export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS_HEIGHT: number, clientWS: WebSocket, BGMRef: RefObject<HTMLAudioElement | null>) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return;
 
@@ -43,6 +44,11 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
     // HANDLER OVER
     
     if(!serverConnectionMade) return;
+    // BGMAudio.loop = true
+    // BGMAudio.volume = 0.5
+    // BGMAudio.play().catch(err => {
+    //     console.warn("Audio play failed:", err);
+    // });
     const gameLoopWrapper = () => {
         gameLoop(state);
         gameLoopAnimation = requestAnimationFrame(gameLoopWrapper)
@@ -55,10 +61,13 @@ export function initGame(canvas: HTMLCanvasElement, CANVAS_WIDTH: number, CANVAS
 
     return {
         cleanup: () => {
-            // state.gameRunning = false
             cancelAnimationFrame(gameLoopAnimation)
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('wheel', handleWheel);
+            if(BGMRef.current){
+                BGMRef.current.pause();
+                BGMRef.current.currentTime = 0;
+            }
         }
     }
 }

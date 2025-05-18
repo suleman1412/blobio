@@ -5,13 +5,20 @@ import { useGameStore } from "@/store/store";
 type BlobClassify = 'player' | 'blob'
 
 export class Blob {
+    static EatAudio: HTMLAudioElement | null = null;
+    
+
+    static initAudio() {
+        if (typeof window !== 'undefined' && this.EatAudio === null) {
+            this.EatAudio = new Audio('/sounds/EatSound.mp3');
+        }
+    }
     r: number;
     color: string;
     pos: { x: number, y: number };
     targetR: number;
     isAlive: boolean = true;
     label?: string;
-    growthRate: number = 0;
     isMoving: boolean;
     userId: string;
     classify: BlobClassify
@@ -123,6 +130,14 @@ export class Blob {
             }
         }
         ws.send(JSON.stringify(EatMessage))
+        Blob.initAudio();
+
+        if (Blob.EatAudio) {
+            Blob.EatAudio.currentTime = 0;
+            Blob.EatAudio.play().catch(err => {
+                console.warn("Audio play failed:", err);
+            });
+        }
     }
     sendGameOverMessage(ws: WebSocket) {
         const GameOverMessage: GameMessage = {
